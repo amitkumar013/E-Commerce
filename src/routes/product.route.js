@@ -1,10 +1,15 @@
 import { Router } from "express";
 import { multerUpload } from "../middlewares/multer.middleware.js";
-import { addProduct } from "../controllers/product.controller.js";
+import {
+    addProduct,
+    getAllProducts,
+    getProductById
+} from "../controllers/product.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/add").post(
+router.route("/add").post(verifyJWT,
     multerUpload.fields([
         { name: "image1", maxCount: 1 },
         { name: "image2", maxCount: 1 },
@@ -13,5 +18,8 @@ router.route("/add").post(
     ]),
     addProduct
 )
+
+router.route("/").get(getAllProducts);
+router.route("/:id").get(getProductById);
 
 export default router;

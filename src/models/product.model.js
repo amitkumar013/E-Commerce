@@ -18,11 +18,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subCategory: {
-      type: String,
-    },
     sizes: {
       type: Array,
+      required: true,
+    },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     images: {
@@ -33,9 +35,10 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
     },
     date: {
-        type: Number,
-        required: true
-    }
+      type: Date,
+      default: Date.now,
+    },
+     
   },
    
 );

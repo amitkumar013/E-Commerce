@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema (
         userName: {
             type: String,
             required: true,
-            unique: true,
             trim: true,
             lowercase: true,
             index: true
@@ -24,9 +23,6 @@ const userSchema = new mongoose.Schema (
             required: [true, 'Password is required']
         },
         avatar: {
-            type: String,
-        },
-        refreshToken: {
             type: String,
         },
     },

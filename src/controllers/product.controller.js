@@ -6,8 +6,11 @@ import { uploadOnCloudinary } from "../services/cloudinary.js";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, category, subCategory, sizes, bestSeller } =
-    req.body;
+  const {name, price, description, category, sizes, bestSeller}=req.body;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
   try {
     if (!name || !price || !description || !category || !sizes) {
       throw new ApiError(400, "All fields are required");
@@ -37,8 +40,8 @@ const addProduct = asyncHandler(async (req, res) => {
       price: Number(price),
       description,
       category,
-      subCategory,
       sizes,
+      ownerId: userId,
       bestSeller: bestSeller === "true" ? true : false,
       images: imageUploadResults.map((result) => result.url),
       date: Date.now(),
@@ -52,4 +55,39 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 });
 
-export { addProduct };
+//--------------------Get All Products-------------------
+const getAllProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({});
+    return res.json(new ApiResponse(200, products, "Products fetched successfully"));
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong");
+  }
+});
+
+//--------------------Get Single Product------------------
+const getProductById = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  //console.log("productId: " + productId)
+
+  if (!productId) {
+    throw new ApiError(400, "Product not found");
+  }
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+    return res.json(new ApiResponse(200, product, "Product fetched successfully"));
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong", error.message);
+  }
+});
+
+ 
+
+export {
+  addProduct,
+  getAllProducts,
+  getProductById,
+};
