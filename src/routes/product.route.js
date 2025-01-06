@@ -2,8 +2,10 @@ import { Router } from "express";
 import { multerUpload } from "../middlewares/multer.middleware.js";
 import {
     addProduct,
+    addToCart,
     getAllProducts,
-    getProductById
+    getProductById,
+    removeFromCart
 } from "../controllers/product.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -21,5 +23,7 @@ router.route("/add").post(verifyJWT,
 
 router.route("/").get(getAllProducts);
 router.route("/:id").get(getProductById);
+router.route("/add-cart/:id").patch(verifyJWT, addToCart)
+router.route("/remove-cart/:id").delete(verifyJWT, removeFromCart)
 
 export default router;

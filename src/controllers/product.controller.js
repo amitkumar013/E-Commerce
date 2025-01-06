@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../services/cloudinary.js";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
-  const {name, price, description, category, sizes, bestSeller}=req.body;
+  const {name, price, description, category, sizes, bestSeller, cart}=req.body;
   const userId = req.user?.id;
   if (!userId) {
     throw new ApiError(401, "Unauthorized User");
@@ -42,6 +42,7 @@ const addProduct = asyncHandler(async (req, res) => {
       category,
       sizes,
       ownerId: userId,
+      cart,
       bestSeller: bestSeller === "true" ? true : false,
       images: imageUploadResults.map((result) => result.url),
       date: Date.now(),
@@ -65,7 +66,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
-//--------------------Get Single Product------------------
+//--------------------Get Single Product-----------------
 const getProductById = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   //console.log("productId: " + productId)
@@ -84,10 +85,109 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
- 
+//--------------------Add to Cart Item-------------------
+const addToCart = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+
+  if (!productId) {
+    throw new ApiError(400, "Product not found");
+  }
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    const isProductInCart = product.cart.find(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (isProductInCart) {
+      isProductInCart.quantity += 1;
+    } else {
+      product.cart.push({ productId, quantity: 1 });
+    }
+
+    await product.save();
+
+    return res.json(
+      new ApiResponse(200, product, "Product added to cart successfully")
+    );
+  } catch (error) {
+    console.error("Add to cart error:", error);
+    throw new ApiError(500, `Something went wrong: ${error.message}`);
+  }
+});
+
+//--------------------Remove to Cart Item----------------
+const removeFromCart = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+  if (!productId) {
+    throw new ApiError(400, "Product not found");
+  }
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    const isProductInCart = product.cart.find(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (isProductInCart) {
+      if (isProductInCart.quantity > 1) {
+        isProductInCart.quantity -= 1;
+      } else {
+        product.cart = product.cart.filter(
+          (item) => item.productId.toString() !== productId
+        );
+      }
+    }
+    await product.save();
+    return res.json(
+      new ApiResponse(200, product, "Product removed from cart successfully")
+    );
+  } catch (error) {
+    console.error("Remove from cart error:", error);
+    throw new ApiError(500, `Something went wrong: ${error.message}`);
+  }
+
+});
+  
+//--------------------Rating Product---------------------
+const rateProduct = asyncHandler(async (req, res) => {
+    try {
+      const { rating } = req.body;
+      const productId = req.params.id;
+      const product = await Product.findByIdAndUpdate(
+        productId,
+        { $push: { ratings: { rating, user: req.user._id } } },
+        { new: true, runValidators: true }
+      );
+      if (!product) {
+        throw new ApiError(404, "Product not found");
+      }
+      return res.json(new ApiResponse(200, product, "Product rated successfully"));
+    } catch (error) {
+      throw new ApiError(500, "Something went wrong");
+    }
+});
+
 
 export {
   addProduct,
   getAllProducts,
   getProductById,
+  addToCart,
+  removeFromCart,
 };

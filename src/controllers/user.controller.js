@@ -19,7 +19,7 @@ const createToken = (id) => {
 
 //--------------------Register User--------------------
 const registerUser = asyncHandler(async (req, res) => {
-    const { userName, email, password } = req.body;
+    const { userName, email, password, role } = req.body;
   
     if (!userName) { 
       throw new ApiError(400, "Username is required");
@@ -42,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
         userName: userName.toLowerCase(),
         email,
         password,
+        role: role || "user",
       });
     
       const createdUser = await User.findById(user.id).select(

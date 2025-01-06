@@ -34,11 +34,16 @@ const productSchema = new mongoose.Schema(
     bestSeller: {
       type: Boolean,
     },
+    cart: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        quantity: { type: Number, default: 1 }
+      }
+    ],
     date: {
       type: Date,
       default: Date.now,
     },
-     
   },
    
 );
