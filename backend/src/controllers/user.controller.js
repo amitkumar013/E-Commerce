@@ -8,7 +8,7 @@ import bcrypt from "bcrypt";
 const createToken = (id) => {
   try {
     console.log("Creating token for user ID:", id);
-    const token = jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEYN_EXPIR });
+    const token = jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIR });
     console.log("Token created:", token);
     return token;
   } catch (error) {
