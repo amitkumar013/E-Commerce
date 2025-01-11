@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
-//import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/authContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
