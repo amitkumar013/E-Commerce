@@ -47,60 +47,62 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your credentials to access your account.
-        </CardDescription>
-      </CardHeader>
-      <form onSubmit={handleLoginSubmit}>
-        <CardContent>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
+    <div className="flex items-center justify-center min-h-screen">
+      <Card className="w-full max-w-sm mx-auto">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account.
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleLoginSubmit}>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
-          </div>
-        </CardContent>
+          </CardContent>
 
-        <CardFooter className="flex flex-col">
-          <Button className="w-full" type="submit">
-            Sign In
-          </Button>
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+          <CardFooter className="flex flex-col">
+            <Button className="w-full" type="submit">
+              Sign In
+            </Button>
+            {error && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          <p className="text-sm text-muted-foreground text-center p-3">
-            Don't have an account?{" "}
-            <Link to="/auth/register" className="text-primary hover:underline">
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </Card>
+            <p className="text-sm text-muted-foreground text-center p-3">
+              Don't have an account?{" "}
+              <Link to="/auth/register" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
   );
 }
