@@ -14,10 +14,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-    },
     sizes: {
       type: Array,
       required: true,
@@ -38,17 +34,37 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+    color: [
+      {
+        name: { type: String },
+        hexCode: { type: String }
+      }
+    ],
+    category: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category"
+      }
+    ],
     cart: [
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         quantity: { type: Number, default: 1 }
       }
     ],
-    date: {
-      type: Date,
-      default: Date.now,
-    },
-  },
+    // wishlist: [
+    //   {
+    //     productId: {
+    //       type: mongoose.Schema.Types.ObjectId, 
+    //       ref: 'Product' 
+    //     }
+    //   }
+    // ]
+  }, {timestamps: true}
    
 );
 

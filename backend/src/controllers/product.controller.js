@@ -3,16 +3,28 @@ import { ApiError } from "../services/ApiError.js";
 import { Product } from "../models/product.model.js";
 import { ApiResponse } from "../services/ApiResponse.js";
 import { uploadOnCloudinary } from "../services/cloudinary.js";
+import {Category} from "../models/category.model.js";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
-  const {name, price, description, category, sizes, bestSeller, cart, rating}=req.body;
+  const {
+    name,
+    price,
+    description,
+    sizes,
+    bestSeller,
+    cart,
+    rating,
+    quantity,
+    color,
+    category,
+  } = req.body;
   const userId = req.user?.id;
   if (!userId) {
     throw new ApiError(401, "Unauthorized User");
   }
   try {
-    if (!name || !price || !description || !category || !sizes) {
+    if (!name || !price || !description || !sizes || !color) {
       throw new ApiError(400, "All fields are required");
     }
     if (isNaN(price) || price <= 0) {
@@ -24,29 +36,37 @@ const addProduct = asyncHandler(async (req, res) => {
     const image3 = req.files?.image3?.[0];
     const image4 = req.files?.image4?.[0];
 
-      if (!image1) {
-        throw new ApiError(400, "Image is required");
-      }
+    if (!image1) {
+      throw new ApiError(400, "Image is required");
+    }
 
     const images = [image1, image2, image3, image4].filter(
       (item) => item !== undefined
     );
 
-    const imageUploadPromises = images.map((image) => uploadOnCloudinary(image.path));
+    const imageUploadPromises = images.map((image) =>
+      uploadOnCloudinary(image.path)
+    );
     const imageUploadResults = await Promise.all(imageUploadPromises);
+
+    const colorArray = color.split(",").map((colorName) => ({
+      name: colorName.trim(),
+      hexCode: "", // Add hexCode if available or set it to an empty string
+    }));
 
     const product = await Product.create({
       name,
       price: Number(price),
       description,
-      category,
       sizes,
       ownerId: userId,
       cart,
-      rating: defaultRating,
+      rating,
+      quantity,
+      color: colorArray,
+      category,
       bestSeller: bestSeller === "true" ? true : false,
       images: imageUploadResults.map((result) => result.url),
-      date: Date.now(),
     });
 
     return res
@@ -56,12 +76,24 @@ const addProduct = asyncHandler(async (req, res) => {
     throw new ApiError(401, error.message);
   }
 });
+//  [{"name": "blue", "hexCode": "#0000FF"}, {"name": "light blue", "hexCode": "#ADD8E6"}]
 
 //--------------------Get All Products-------------------
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({});
-    return res.json(new ApiResponse(200, products, "Products fetched successfully"));
+    const products = await Product.find({})
+    .limit(12)
+    .sort({ createdAt: -1 })
+    .populate('category');
+
+    if (!products) {
+      throw new ApiError(404, "No products found");
+    }
+    return res.status(200).send({
+      totalCount: products.length,
+      products,
+      message: "Products fetched successfully",
+    });
   } catch (error) {
     throw new ApiError(500, "Something went wrong");
   }
@@ -80,7 +112,9 @@ const getProductById = asyncHandler(async (req, res) => {
     if (!product) {
       throw new ApiError(404, "Product not found");
     }
-    return res.json(new ApiResponse(200, product, "Product fetched successfully"));
+    return res.json(
+      new ApiResponse(200, product, "Product fetched successfully")
+    );
   } catch (error) {
     throw new ApiError(500, "Something went wrong", error.message);
   }
@@ -162,28 +196,32 @@ const removeFromCart = asyncHandler(async (req, res) => {
     console.error("Remove from cart error:", error);
     throw new ApiError(500, `Something went wrong: ${error.message}`);
   }
-
 });
-  
+
 //--------------------Rating Product---------------------
-const rateProduct = asyncHandler(async (req, res) => {
-    try {
-      const { rating } = req.body;
-      const productId = req.params.id;
-      const product = await Product.findByIdAndUpdate(
-        productId,
-        { $push: { ratings: { rating, user: req.user._id } } },
-        { new: true, runValidators: true }
-      );
-      if (!product) {
-        throw new ApiError(404, "Product not found");
-      }
-      return res.json(new ApiResponse(200, product, "Product rated successfully"));
-    } catch (error) {
-      throw new ApiError(500, "Something went wrong");
+const ratingProduct = asyncHandler(async (req, res) => {
+  try {
+    const { rating } = req.body;
+    const productId = req.params.id;
+    if (!productId) {
+      throw new ApiError(400, "Invalid product id");
     }
-});
 
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      { rating },
+      { new: true }
+    );
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+    return res.json(
+      new ApiResponse(200, product, "Product rating updated successfully")
+    );
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong", error.message);
+  }
+});
 
 export {
   addProduct,
@@ -191,4 +229,5 @@ export {
   getProductById,
   addToCart,
   removeFromCart,
+  ratingProduct,
 };
