@@ -34,6 +34,10 @@ const productSchema = new mongoose.Schema(
     bestSeller: {
       type: Boolean,
     },
+    rating: {
+      type: Number,
+      default: 0,
+    },
     cart: [
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },

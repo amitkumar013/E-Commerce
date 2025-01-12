@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../services/cloudinary.js";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
-  const {name, price, description, category, sizes, bestSeller, cart}=req.body;
+  const {name, price, description, category, sizes, bestSeller, cart, rating}=req.body;
   const userId = req.user?.id;
   if (!userId) {
     throw new ApiError(401, "Unauthorized User");
@@ -43,6 +43,7 @@ const addProduct = asyncHandler(async (req, res) => {
       sizes,
       ownerId: userId,
       cart,
+      rating: defaultRating,
       bestSeller: bestSeller === "true" ? true : false,
       images: imageUploadResults.map((result) => result.url),
       date: Date.now(),
