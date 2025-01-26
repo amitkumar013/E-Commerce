@@ -12,81 +12,103 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Icons } from "@/components/ui/icons";
 import axios from "axios";
 //import { useAuth } from "@/context/authContext";
 
- export default function LoginPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   //const { auth, setAuth } = useAuth();
 
   const navigate = useNavigate();
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await axios.post("http://localhost:8000/api/v1/users/login", {
         email,
         password,
       });
-//       if (res && res.data.success) {
-//         setAuth({
-//           ...auth,
-//           user: res.data.user,
-//           token: res.data.accessToken,
-//         });
-//         localStorage.setItem("auth", JSON.stringify(res.data));
-//         navigate("/");
-//       } else {
-//         console.log("Invalid email or password");
-//       }
+      // if (res && res.data.success) {
+      //   setAuth({
+      //     ...auth,
+      //     user: res.data.user,
+      //     token: res.data.accessToken,
+      //   });
+      //   localStorage.setItem("auth", JSON.stringify(res.data));
+      //   navigate("/");
+      // } else {
+      //   console.log("Invalid email or password");
+      // }
     } catch (error) {
       console.error("An error occurred while submitting the login form", error);
+      setError("Invalid email or password");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Card className="w-full max-w-sm mx-auto">
-        <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+      <Card className="w-full max-w-sm mx-auto bg-white shadow-lg rounded-lg">
+        <CardHeader className="text-center">
+          <Icons.user className="h-12 w-12 text-primary mx-auto" />
+          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardDescription className="text-gray-600">
             Enter your credentials to access your account.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLoginSubmit}>
-          <CardContent>
+          <CardContent className="p-6">
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                />
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  <Icons.email className="h-4 w-4" />
+                  Email
+                </Label>
+                <div className="relative">
+                  <Icons.email className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    className="pl-10"
+                  />
+                </div>
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
+                <Label htmlFor="password" className="flex items-center gap-2">
+                  <Icons.password className="h-4 w-4" />
+                  Password
+                </Label>
+                <div className="relative">
+                  <Icons.password className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    className="pl-10"
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col">
-            <Button className="w-full" type="submit">
-              Sign In
+          <CardFooter className="flex flex-col p-6">
+            <Button className="w-full bg-primary text-white py-2 rounded-md" type="submit" disabled={isLoading}>
+              {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Signing In..." : "Sign In"}
             </Button>
             {error && (
               <Alert variant="destructive" className="mt-4">
@@ -94,7 +116,7 @@ import axios from "axios";
               </Alert>
             )}
 
-            <p className="text-sm text-muted-foreground text-center p-3">
+            <p className="text-sm text-gray-600 text-center mt-4">
               Don't have an account?{" "}
               <Link to="/auth/register" className="text-primary hover:underline">
                 Sign up
