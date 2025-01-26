@@ -1,123 +1,81 @@
-import { useState, useEffect } from 'react'
-import { ShoppingCart, User, Search, Menu } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import {Link} from 'react-router-dom'
-
-const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Products', href: '/products' },
-  { name: 'Categories', href: '/categories' },
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/contact' },
-]
+import { Button } from "@/components/ui/button"
+import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    window.addEventListener('resize', handleResize)
-    handleResize()
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
   return (
-    <header className="bg-background sticky top-0 z-50 transition-all duration-300">
-      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${isMobile && isScrolled ? 'h-12' : 'h-16'}`}>
-        <div className={`flex items-center justify-between h-full ${isMobile && isScrolled ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="flex items-center">
-            <div className="md:hidden mr-2">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-foreground">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open main menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left">
-                  <div className="mt-6 flow-root">
-                    <div className="space-y-2">
-                      {navItems.map((item) => (
-                        <Link
-                          key={item.name}
-                          to={item.href}
-                          className="-m-3 p-3 flex items-center rounded-md text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
-                        >
-                          {item.name}
-                        </Link >
-                      ))}
-                      <div className="pt-4 flex space-x-4">
-                        <Button variant="outline" size="icon">
-                          <User className="h-5 w-5" />
-                        </Button>
-                        <Button variant="outline" size="icon">
-                          <ShoppingCart className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-            <Link  to="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">EShop</span>
-            </Link >
-          </div>
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-4">
-              {navItems.map((item) => (
-                <Link 
-                  key={item.name}
-                  to={item.href}
-                  className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  {item.name}
-                </Link >
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-          </div>
+    <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+      <div className="container mx-auto px-4 py-4 flex items-center">
+        {/* Mobile Menu Button - Far left */}
+        <button onClick={toggleMenu} className="md:hidden mr-4">
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Logo - Next to the toggle button */}
+        <Link to="/" className="text-2xl font-bold text-primary mr-auto">
+          EShop
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6 ml-6">
+          <Link to="/products" className="text-gray-600 hover:text-primary">
+            Products
+          </Link>
+          <Link to="/categories" className="text-gray-600 hover:text-primary">
+            Categories
+          </Link>
+          <Link to="/deals" className="text-gray-600 hover:text-primary">
+            Deals
+          </Link>
+        </nav>
+
+        {/* Search Bar */}
+        <div className="hidden md:flex items-center space-x-2 flex-1 max-w-md mx-6">
+          <Input type="text" placeholder="Search products..." className="w-full" />
+          <Button size="icon">
+            <Search className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* User, Cart, and Search Icons - Visible on all screen sizes */}
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Search className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="relative">
+            <ShoppingCart className="h-5 w-5" />
+            <span className="absolute top-0 right-0 h-4 w-4 text-xs bg-primary text-primary-foreground rounded-full flex items-center justify-center">
+              0
+            </span>
+          </Button>
+          <Button variant="ghost" size="icon">
+            <User className="h-5 w-5" />
+          </Button>
         </div>
       </div>
-      <div className={`absolute top-0 left-0 w-full transition-all duration-300 ${isMobile && isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center">
-          <form className="relative flex-grow">
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="w-full pl-10 pr-4 py-2 rounded-full"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          </form>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden">
+          <nav className="flex flex-col space-y-4 px-4 py-6 bg-gray-50">
+            <Link to="/products" className="text-gray-600 hover:text-primary">
+              Products
+            </Link>
+            <Link to="/categories" className="text-gray-600 hover:text-primary">
+              Categories
+            </Link>
+            <Link to="/deals" className="text-gray-600 hover:text-primary">
+              Deals
+            </Link>
+          </nav>
         </div>
-      </div>
+      )}
     </header>
   )
 }
-
