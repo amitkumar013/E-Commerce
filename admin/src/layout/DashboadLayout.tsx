@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -49,27 +49,29 @@ export default function DashboardLayout() {
         <nav className="mt-8">
           <ul className="space-y-2 px-4">
             {[
-              { icon: BarChart3, label: "Dashboard", active: true },
-              { icon: ShoppingCart, label: "Orders" },
-              { icon: Users, label: "Customers" },
-              { icon: Package, label: "Products" },
-              { icon: CreditCard, label: "Transactions" },
-              { icon: Settings, label: "Settings" },
+              { icon: BarChart3, label: "Dashboard", path: "/", active: false },
+              { icon: Users, label: "Add Category", path: "/category" },
+              { icon: ShoppingCart, label: "Orders", path: "/orders" },
+              { icon: Package, label: "Products", path: "/products" },
+              { icon: CreditCard, label: "Transactions", path: "/transactions" },
+              { icon: Settings, label: "Settings", path: "/settings" },
             ].map((item, index) => (
               <li key={index}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start flex items-center space-x-2 py-2 px-3 rounded-lg transition-colors duration-200",
-                    item.active
-                      ? "bg-primary text-white"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-700"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                  {item.active && <ChevronRight className="ml-auto h-5 w-5" />}
-                </Button>
+                <Link to={item.path}>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start flex items-center space-x-2 py-2 px-3 rounded-lg transition-colors duration-200",
+                      item.active
+                        ? "bg-primary text-white"
+                        : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                    {item.active && <ChevronRight className="ml-auto h-5 w-5" />}
+                  </Button>
+                </Link>
               </li>
             ))}
           </ul>
