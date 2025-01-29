@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./layout/DashboadLayout";
 import DashboardPage from "./pages/DashboardPage";
+import CategoriesPage from "./pages/CategoryPage";
 
 const router=createBrowserRouter([
     {
@@ -14,6 +15,10 @@ const router=createBrowserRouter([
             index: true,
             element: <DashboardPage />,
           },
+          {
+            path: "category",
+            element: <CategoriesPage />,
+          }
         ]
     },
     {
