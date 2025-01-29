@@ -1,73 +1,90 @@
-"use client"
-
-import { useState } from "react"
-//import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Icons } from "@/components/ui/icons"
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Icons } from "@/components/ui/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
+import toast from 'react-hot-toast';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "user",
-  })
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  //const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }))
-  }
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [userName, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("admin");
+  const navigate = useNavigate();
 
   const handleRoleChange = (value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      role: value,
-    }))
-  }
+    setRole(value);
+  };
+  // async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match")
-      setIsLoading(false)
-      return
+    if (password !== confirmPassword) {
+      setError("Passwords does not match");
+      setIsLoading(false);
+      return;
     }
 
-    // try {
-    //   // Simulating API call
-    //   await new Promise((resolve) => setTimeout(resolve, 2000))
-    //   console.log("Form submitted:", formData)
-    //   router.push("/register-success")
-    // } catch (error) {
-    //   setError("An error occurred. Please try again.")
-    // } finally {
-    //   setIsLoading(false)
-    // }
-  }
+    // const res = await axios.post(`${process.env.BACKEND_API}/users/register`, {name, email, password, role})
+    try {
+      const res = await axios.post("http://localhost:8000/api/v1/users/register", {
+        userName,
+        email,
+        password,
+        role,
+      });
+      if (res.data && res.data.success) {
+        toast.success(res.data.message)
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setRole("admin");
+        navigate("/");
+      } else {
+        toast.error(res.data.message)
+      }
+
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.")
+      setError("An error occurred while submitting the register form");
+    } finally {
+      setIsLoading(false)
+    }
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword)
-  }
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -76,11 +93,15 @@ export default function RegisterPage() {
           <div className="flex justify-center">
             <Icons.user className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold text-center">Create an account</CardTitle>
-          <CardDescription className="text-center">Enter your details below to create your account</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center">
+            Create an account
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your details below to create your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleRegisterSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="userName" className="flex items-center gap-2">
                 <Icons.userName className="h-4 w-4" />
@@ -93,8 +114,8 @@ export default function RegisterPage() {
                   name="userName"
                   type="text"
                   required
-                  value={formData.userName}
-                  onChange={handleChange}
+                  value={userName}
+                  onChange={(e) => setName(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -111,8 +132,8 @@ export default function RegisterPage() {
                   name="email"
                   type="email"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -129,8 +150,8 @@ export default function RegisterPage() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
                 />
                 <button
@@ -138,12 +159,19 @@ export default function RegisterPage() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                 >
-                  {showPassword ? <Icons.eyeOpen className="h-5 w-5" /> : <Icons.eyeClosed className="h-5 w-5" />}
+                  {showPassword ? (
+                    <Icons.eyeOpen className="h-5 w-5" />
+                  ) : (
+                    <Icons.eyeClosed className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="flex items-center gap-2">
+              <Label
+                htmlFor="confirmPassword"
+                className="flex items-center gap-2"
+              >
                 <Icons.confirmPassword className="h-4 w-4" />
                 Confirm Password
               </Label>
@@ -154,8 +182,8 @@ export default function RegisterPage() {
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pl-10 pr-10"
                 />
                 <button
@@ -176,7 +204,7 @@ export default function RegisterPage() {
                 <Icons.role className="h-4 w-4" />
                 Role
               </Label>
-              <Select name="role" value={formData.role} onValueChange={handleRoleChange}>
+              <Select name="role" value={role} onValueChange={handleRoleChange}>
                 <SelectTrigger className="pl-10 relative">
                   <Icons.role className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <SelectValue placeholder="Select a role" />
@@ -189,7 +217,9 @@ export default function RegisterPage() {
             </div>
             {error && <div className="text-red-600 text-sm">{error}</div>}
             <Button className="w-full" type="submit" disabled={isLoading}>
-              {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {isLoading ? "Registering..." : "Register"}
             </Button>
           </form>
@@ -197,13 +227,12 @@ export default function RegisterPage() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">
-              Log in
-            </a>
+            <Link to="/auth/login" className="text-blue-600 hover:underline">
+              Sign In
+            </Link>
           </p>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-

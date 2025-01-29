@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import Header from "@/components/Header";
+import { Toaster } from 'react-hot-toast';
 
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -81,9 +82,13 @@ export default function DashboardLayout() {
       {/* Main Content */}
       <main className="flex-1 overflow-hidden">
         <Header onSidebarToggle={() => setIsSidebarOpen(true)} />
+        <Toaster position="top-center" />
         <ScrollArea className="h-[calc(100vh-4rem)] p-4 md:p-6">
+        
           <Outlet />
+
         </ScrollArea>
+         
       </main>
     </div>
   );

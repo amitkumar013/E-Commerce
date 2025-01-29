@@ -14,14 +14,15 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
 import axios from "axios";
-//import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/authContext";
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  //const { auth, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const navigate = useNavigate();
 
@@ -33,19 +34,23 @@ export default function LoginPage() {
         email,
         password,
       });
-      // if (res && res.data.success) {
-      //   setAuth({
-      //     ...auth,
-      //     user: res.data.user,
-      //     token: res.data.accessToken,
-      //   });
-      //   localStorage.setItem("auth", JSON.stringify(res.data));
-      //   navigate("/");
-      // } else {
-      //   console.log("Invalid email or password");
-      // }
+      if (res && res.data.success) {
+        setAuth({
+          ...auth,
+          user: res.data.user,
+          token: res.data.accessToken,
+        });
+        localStorage.setItem("auth", JSON.stringify(res.data));
+
+        toast.success(res.data.message);
+
+        navigate("/");
+      } else{
+        toast.error(res.data.message);
+        setError("Invalid email or password");
+      }
     } catch (error) {
-      console.error("An error occurred while submitting the login form", error);
+      toast.error("Invalid email or password");
       setError("Invalid email or password");
     } finally {
       setIsLoading(false);
