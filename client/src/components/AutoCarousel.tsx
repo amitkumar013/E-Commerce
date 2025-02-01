@@ -40,8 +40,8 @@ export function AutoCarousel() {
   };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto px-4 py-7">
-      <div className="relative aspect-[2/1] overflow-hidden">
+    <div className="relative w-full max-w-4xl mx-auto px-4 py-8">
+      <div className="relative aspect-[2/1] overflow-hidden rounded-xl">
         {images.map((image, index) => (
           <div
             key={index}
