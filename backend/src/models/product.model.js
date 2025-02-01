@@ -30,10 +30,12 @@ const productSchema = new mongoose.Schema(
     bestSeller: {
       type: Boolean,
     },
-    rating: {
-      type: Number,
-      default: 0,
-    },
+    ratings: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        rating: { type: Number, min: 1, max: 5 },
+      }
+    ],
     quantity: {
       type: Number,
       default: 1,
@@ -49,21 +51,8 @@ const productSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
       }
-    ],
-    cart: [
-      {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        quantity: { type: Number, default: 1 }
-      }
-    ],
-    // wishlist: [
-    //   {
-    //     productId: {
-    //       type: mongoose.Schema.Types.ObjectId, 
-    //       ref: 'Product' 
-    //     }
-    //   }
-    // ]
+    ]
+     
   }, {timestamps: true}
    
 );
