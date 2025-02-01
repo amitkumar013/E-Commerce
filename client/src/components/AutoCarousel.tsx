@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const images = [
   {
@@ -22,27 +22,14 @@ const images = [
 
 export function AutoCarousel() {
   const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = React.useState(true);
 
   React.useEffect(() => {
-    let interval: NodeJS.Timeout;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }, 4500);
 
-    if (isAutoPlaying) {
-      interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % images.length);
-      }, 4500); // Change slide every 5 seconds
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isAutoPlaying]);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % images.length);
@@ -53,89 +40,45 @@ export function AutoCarousel() {
   };
 
   return (
-    <div
-      className="relative w-full max-w-4xl mx-auto px-4 py-7"
-      onMouseEnter={() => setIsAutoPlaying(true)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
-    >
+    <div className="relative w-full max-w-4xl mx-auto px-4 py-7">
       <div className="relative aspect-[2/1] overflow-hidden">
         {images.map((image, index) => (
           <div
             key={index}
-            className={cn(
-              "absolute w-full h-full transition-transform duration-500 ease-out",
-              index === currentSlide ? "translate-x-0" : "translate-x-full"
-            )}
-            style={{
-              transform: `translateX(${(index - currentSlide) * 100}%)`,
-              zIndex: index === currentSlide ? 10 : 0,
-            }}
+            className="absolute w-full h-full transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(${(index - currentSlide) * 100}%)` }}
           >
             <img
-              src={image?.url || "/placeholder.svg"}
-              alt={image?.alt || "Image"}
+              src={image.url}
+              alt={image.alt}
               className="object-cover w-full h-auto"
               loading={index === 0 ? "eager" : "lazy"}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
           </div>
         ))}
       </div>
-
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
         className="absolute left-8 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 p-2 rounded-full shadow-lg z-20 hidden md:block"
         aria-label="Previous slide"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 19.5L8.25 12l7.5-7.5"
-          />
-        </svg>
+        <ArrowLeft className="w-6 h-6" />
       </button>
       <button
         onClick={nextSlide}
         className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 p-2 rounded-full shadow-lg z-20 hidden md:block"
         aria-label="Next slide"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.25 4.5l7.5 7.5-7.5 7.5"
-          />
-        </svg>
+        <ArrowRight className="w-6 h-6" />
       </button>
-
       {/* Navigation Dots */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
         {images.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToSlide(index)}
-            className={cn(
-              "w-2.5 h-2.5 rounded-full transition-all duration-300",
-              index === currentSlide
-                ? "bg-white scale-110"
-                : "bg-white/50 hover:bg-white/75"
-            )}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${index === currentSlide ? "bg-white scale-110" : "bg-green-400 hover:bg-white/75"}`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
