@@ -72,7 +72,6 @@ export default function LoginPage() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email" className="flex items-center gap-2">
-                  <Icons.email className="h-4 w-4" />
                   Email
                 </Label>
                 <div className="relative">
@@ -91,7 +90,6 @@ export default function LoginPage() {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password" className="flex items-center gap-2">
-                  <Icons.password className="h-4 w-4" />
                   Password
                 </Label>
                 <div className="relative">

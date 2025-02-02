@@ -76,7 +76,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Category Management</h1>
+      <h1 className="text-2xl font-bold mb-4">Create Category</h1>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0">
         <div className="relative w-full sm:w-64">

@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./layout/DashboadLayout";
 import DashboardPage from "./pages/DashboardPage";
 import CategoriesPage from "./pages/CategoryPage";
+import AddProductPage from "./pages/AddProductPage";
 
 const router=createBrowserRouter([
     {
@@ -18,7 +19,12 @@ const router=createBrowserRouter([
           {
             path: "category",
             element: <CategoriesPage />,
+          },
+          {
+            path: "add-product",
+            element: <AddProductPage />,
           }
+
         ]
     },
     {

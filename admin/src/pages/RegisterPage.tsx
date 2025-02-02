@@ -27,7 +27,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userName, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,7 +68,6 @@ export default function RegisterPage() {
       } else {
         toast.error(res.data.message)
       }
-
     } catch (error) {
       toast.error("Something went wrong. Please try again.")
       setError("An error occurred while submitting the register form");
@@ -80,10 +78,6 @@ export default function RegisterPage() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -104,7 +98,6 @@ export default function RegisterPage() {
           <form onSubmit={handleRegisterSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="userName" className="flex items-center gap-2">
-                <Icons.userName className="h-4 w-4" />
                 Username
               </Label>
               <div className="relative">
@@ -122,7 +115,6 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="flex items-center gap-2">
-                <Icons.email className="h-4 w-4" />
                 Email
               </Label>
               <div className="relative">
@@ -140,7 +132,6 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password" className="flex items-center gap-2">
-                <Icons.password className="h-4 w-4" />
                 Password
               </Label>
               <div className="relative">
@@ -172,7 +163,6 @@ export default function RegisterPage() {
                 htmlFor="confirmPassword"
                 className="flex items-center gap-2"
               >
-                <Icons.confirmPassword className="h-4 w-4" />
                 Confirm Password
               </Label>
               <div className="relative">
@@ -180,28 +170,16 @@ export default function RegisterPage() {
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={"password"}
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pl-10 pr-10"
                 />
-                <button
-                  type="button"
-                  onClick={toggleConfirmPasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                >
-                  {showConfirmPassword ? (
-                    <Icons.eyeOpen className="h-5 w-5" />
-                  ) : (
-                    <Icons.eyeClosed className="h-5 w-5" />
-                  )}
-                </button>
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="role" className="flex items-center gap-2">
-                <Icons.role className="h-4 w-4" />
                 Role
               </Label>
               <Select name="role" value={role} onValueChange={handleRoleChange}>

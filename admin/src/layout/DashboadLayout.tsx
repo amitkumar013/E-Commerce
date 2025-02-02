@@ -52,6 +52,7 @@ export default function DashboardLayout() {
             {[
               { icon: BarChart3, label: "Dashboard", path: "/", active: false },
               { icon: Users, label: "Add Category", path: "/category" },
+              { icon: ShoppingCart, label: "Add Product", path: "/add-product" },
               { icon: ShoppingCart, label: "Orders", path: "/orders" },
               { icon: Package, label: "Products", path: "/products" },
               { icon: CreditCard, label: "Transactions", path: "/transactions" },
