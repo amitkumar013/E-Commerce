@@ -41,10 +41,10 @@ const getAllCategories = asyncHandler(async (req, res)=> {
         throw new ApiError(401, "Unauthorized User");
     }
     try {
-        const categories = await Category.find({});
+        const category = await Category.find({});
         return res
         .status(200)
-        .json(new ApiResponse(200, categories, "Categories fetched successfully"));
+        .json(new ApiResponse(200, category, "Categories fetched successfully"));
         
     } catch (error) {
         throw new ApiError(500, error.message)      
