@@ -3,7 +3,7 @@ import { ApiError } from "../services/ApiError.js";
 import { Product } from "../models/product.model.js";
 import { ApiResponse } from "../services/ApiResponse.js";
 import { uploadOnCloudinary } from "../services/cloudinary.js";
-import {Category} from "../models/category.model.js";
+import { Category } from "../models/category.model.js";
 import { User } from "../models/user.model.js";
 
 //--------------------Create Product--------------------
@@ -12,79 +12,71 @@ const addProduct = asyncHandler(async (req, res) => {
     name,
     price,
     description,
-    sizes,
     bestSeller,
     cart,
     ratings,
     quantity,
-    color,
+    discount,
+    delivery,
+    brand,
+    sizes,
+    colors,
     category,
     wishlist,
   } = req.body;
-  const userId = req.user?.id;
-  if (!userId) {
-    throw new ApiError(401, "Unauthorized User");
+
+  // Validation check
+  if (!name || !price || !description || !colors || !sizes) {
+    throw new ApiError(400, "All fields are required");
   }
-  try {
-    if (!name || !price || !description || !sizes || !color) {
-      throw new ApiError(400, "All fields are required");
-    }
-    if (isNaN(price) || price <= 0) {
-      throw new ApiError(400, "Price must be a positive number");
-    }
 
-    const image1 = req.files?.image1?.[0];
-    const image2 = req.files?.image2?.[0];
-    const image3 = req.files?.image3?.[0];
-    const image4 = req.files?.image4?.[0];
+  // Parse colors and sizes correctly
+  const colorArray = JSON.parse(colors || "[]").map((colorName) => ({
+    name: colorName.trim(),
+    hexCode: "",
+  }));
+  const parsedSizes = JSON.parse(sizes || "[]");
 
-    if (!image1) {
-      throw new ApiError(400, "Image is required");
-    }
+  const image1 = req.files?.image1?.[0];
+  const image2 = req.files?.image2?.[0];
+  const image3 = req.files?.image3?.[0];
+  const image4 = req.files?.image4?.[0];
 
-    const images = [image1, image2, image3, image4].filter(
-      (item) => item !== undefined
-    );
-
-    const imageUploadPromises = images.map((image) =>
-      uploadOnCloudinary(image.path)
-    );
-    const imageUploadResults = await Promise.all(imageUploadPromises);
-
-    const colorArray = color.split(",").map((colorName) => ({
-      name: colorName.trim(),
-      hexCode: "", // Add hexCode if available or set it to an empty string
-    }));
-
-    // Convert category names to ObjectIds
-    const categoryIds = await Category.find({ name: { $in: category } }, "_id");
-
-    // if (!categoryIds.length) {
-    //   throw new ApiError(400, "Invalid categories provided");
-    // }
-    
-    const product = await Product.create({
-      name,
-      price: Number(price),
-      description,
-      sizes,
-      ownerId: userId,
-      cart,
-      ratings,
-      quantity,
-      color: colorArray,
-      category: categoryIds.map((cat) => cat._id), // Store category as ObjectIds
-      wishlist,
-      bestSeller: bestSeller === "true" ? true : false,
-      images: imageUploadResults.map((result) => result.url),
-    });
-
-    return res
-      .status(201)
-      .json(new ApiResponse(201, product, "Product created successfully"));
-  } catch (error) {
-    throw new ApiError(401, error.message);
+  if (!image1) {
+    throw new ApiError(400, "Image is required");
   }
+
+  const images = [image1, image2, image3, image4].filter(
+    (item) => item !== undefined
+  );
+
+  const imageUploadPromises = images.map((image) =>
+    uploadOnCloudinary(image.path)
+  );
+  const imageUploadResults = await Promise.all(imageUploadPromises);
+
+  const product = await Product.create({
+    name,
+    price: Number(price),
+    description,
+    sizes: parsedSizes,
+    ownerId: req.user?.id,
+    cart,
+    ratings,
+    quantity,
+    colors: colorArray,
+    category,
+    wishlist,
+    discount,
+    delivery,
+    brand,
+    bestSeller: bestSeller === "true",
+    images: imageUploadResults.map((result) => result.url),
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, product, "Product created successfully"));
 });
 //  [{"name": "blue", "hexCode": "#0000FF"},]
 
@@ -92,10 +84,10 @@ const addProduct = asyncHandler(async (req, res) => {
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({})
-    .limit(12)
-    .sort({ createdAt: -1 })
-    .populate("category", "name slug")
-    .exec();
+      .limit(12)
+      .sort({ createdAt: -1 })
+      .populate("category", "name slug")
+      .exec();
 
     if (!products) {
       throw new ApiError(404, "No products found");
@@ -264,7 +256,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
     await product.save();
 
     return res.json(
-      new ApiResponse(200, { product, avgRating }, "Product rating updated successfully")
+      new ApiResponse(
+        200,
+        { product, avgRating },
+        "Product rating updated successfully"
+      )
     );
   } catch (error) {
     console.error("Error updating rating:", error);
@@ -311,7 +307,11 @@ const addToWishlist = asyncHandler(async (req, res) => {
     }
 
     return res.json(
-      new ApiResponse(200, user.wishlist, "Product added to wishlist successfully")
+      new ApiResponse(
+        200,
+        user.wishlist,
+        "Product added to wishlist successfully"
+      )
     );
   } catch (error) {
     console.error("Add to wishlist failed:", error);
@@ -356,14 +356,17 @@ const removeFromWishlist = asyncHandler(async (req, res) => {
     await user.save();
 
     return res.json(
-      new ApiResponse(200, user.wishlist, "Product removed from wishlist successfully")
+      new ApiResponse(
+        200,
+        user.wishlist,
+        "Product removed from wishlist successfully"
+      )
     );
   } catch (error) {
     console.error("Remove from wishlist failed:", error);
     throw new ApiError(500, `Something went wrong: ${error.message}`);
   }
 });
-
 
 export {
   addProduct,

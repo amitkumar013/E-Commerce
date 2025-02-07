@@ -55,9 +55,11 @@ export default function CategoriesPage() {
       );
       if (data?.success) {
         setCategories(data.data);
+      } else {
+        toast.error("Failed to fetch categories");
       }
     } catch (error) {
-      toast.error("Something went wrong fetching categories");
+      toast.error("Couldn't get categories");
     }
   };
   useEffect(() => {

@@ -12,6 +12,7 @@ import {
   Settings,
   ChevronRight,
   X,
+  LucidePercentDiamond,
 } from "lucide-react";
 import Header from "@/components/Header";
 import { Toaster } from 'react-hot-toast';
@@ -51,8 +52,9 @@ export default function DashboardLayout() {
           <ul className="space-y-2 px-4">
             {[
               { icon: BarChart3, label: "Dashboard", path: "/", active: false },
-              { icon: Users, label: "Add Category", path: "/category" },
-              { icon: ShoppingCart, label: "Add Product", path: "/add-product" },
+              { icon: Users, label: "Add Category", path: "admin/category" },
+              { icon: ShoppingCart, label: "Add Product", path: "admin/add-product" },
+              { icon: LucidePercentDiamond, label: "Product Manage", path: "admin/product-management" },
               { icon: ShoppingCart, label: "Orders", path: "/orders" },
               { icon: Package, label: "Products", path: "/products" },
               { icon: CreditCard, label: "Transactions", path: "/transactions" },

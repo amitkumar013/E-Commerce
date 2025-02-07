@@ -34,27 +34,29 @@ const productSchema = new mongoose.Schema(
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         rating: { type: Number, min: 1, max: 5 },
-      }
+      },
     ],
     quantity: {
       type: Number,
       default: 1,
     },
-    color: [
+    discount: { type: String },
+    delivery: { type: String },
+    brand: { type: String },
+    colors: [
       {
         name: { type: String },
-        hexCode: { type: String }
-      }
+        hexCode: { type: String },
+      },
     ],
     category: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category"
-      }
-    ]
-     
-  }, {timestamps: true}
-   
+        ref: "Category",
+      },
+    ],
+  },
+  { timestamps: true }
 );
 
 export const Product = mongoose.model("Product", productSchema);
