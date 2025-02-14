@@ -2,33 +2,22 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    sizes: {
-      type: Array,
-      required: true,
-    },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    discountPrice: { type: Number, required: true },
+    discountPercentage: { type: Number, required: true},
+    sizes: { type: Array, required: true },
+    images: { type: Array, required: true },
+    bestSeller: { type: Boolean },
+    quantity: { type: Number, default: 1 },
+    delivery: { type: String },
+    brand: { type: String },
+    stock: { type: String },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-    images: {
-      type: Array,
-      required: true,
-    },
-    bestSeller: {
-      type: Boolean,
     },
     ratings: [
       {
@@ -36,25 +25,21 @@ const productSchema = new mongoose.Schema(
         rating: { type: Number, min: 1, max: 5 },
       },
     ],
-    quantity: {
-      type: Number,
-      default: 1,
-    },
-    discount: { type: String },
-    delivery: { type: String },
-    brand: { type: String },
     colors: [
       {
         name: { type: String },
         hexCode: { type: String },
       },
     ],
-    category: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
-      },
-    ],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
+    // category: {
+    //   _id: mongoose.Schema.Types.ObjectId,
+    //   name: String,
+    //   slug: String,
+    // },
   },
   { timestamps: true }
 );

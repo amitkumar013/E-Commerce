@@ -151,6 +151,7 @@ export default function CategoriesPage() {
     }
   };
 
+  //------------Search Filter------------------
   const filteredCategories = categories.filter(
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -253,7 +254,7 @@ export default function CategoriesPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => {
-                    console.log("Editing category set to:", category); // Debugging line
+                    console.log("Editing category set to:", category);
                     setEditingCategory(category);
                     setEditName(category.name);
                     setEditDescription(category.description);

@@ -5,7 +5,9 @@ import {
     addToCart,
     addToWishlist,
     getAllProducts,
+    getHomeProducts,
     getProductById,
+    getSingleAndRelatedProducts,
     ratingProduct,
     removeFromCart,
     removeFromWishlist
@@ -25,6 +27,9 @@ router.route("/add").post(verifyJWT,
 )
 
 router.route("/").get(getAllProducts);
+router.route("/home-products").get(getHomeProducts)
+router.route("/related-products/:id").get(getSingleAndRelatedProducts)
+
 router.route("/:id").get(getProductById);
 router.route("/add-cart/:id").patch(verifyJWT, addToCart)
 router.route("/remove-cart/:id").delete(verifyJWT, removeFromCart)

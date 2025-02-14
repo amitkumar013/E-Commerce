@@ -3,31 +3,44 @@ import { ApiError } from "../services/ApiError.js";
 import { Product } from "../models/product.model.js";
 import { ApiResponse } from "../services/ApiResponse.js";
 import { uploadOnCloudinary } from "../services/cloudinary.js";
-import { Category } from "../models/category.model.js";
 import { User } from "../models/user.model.js";
+import { Category } from "../models/category.model.js";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
   const {
     name,
     price,
+    discountPrice,
+    discountPercentage,
     description,
     bestSeller,
     cart,
     ratings,
     quantity,
-    discount,
     delivery,
     brand,
     sizes,
     colors,
     category,
     wishlist,
+    stock,
   } = req.body;
 
   // Validation check
-  if (!name || !price || !description || !colors || !sizes) {
+  if (
+    !name ||
+    !price ||
+    !discountPrice ||
+    !discountPercentage ||
+    !description ||
+    !colors ||
+    !sizes
+  ) {
     throw new ApiError(400, "All fields are required");
+  }
+  if (!category) {
+    throw new ApiError(400, "Category is required");
   }
 
   // Parse colors and sizes correctly
@@ -58,6 +71,8 @@ const addProduct = asyncHandler(async (req, res) => {
   const product = await Product.create({
     name,
     price: Number(price),
+    discountPrice: Number(discountPrice),
+    discountPercentage: Number(discountPercentage),
     description,
     sizes: parsedSizes,
     ownerId: req.user?.id,
@@ -67,9 +82,9 @@ const addProduct = asyncHandler(async (req, res) => {
     colors: colorArray,
     category,
     wishlist,
-    discount,
     delivery,
     brand,
+    stock,
     bestSeller: bestSeller === "true",
     images: imageUploadResults.map((result) => result.url),
   });
@@ -77,8 +92,7 @@ const addProduct = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, product, "Product created successfully"));
-});
-//  [{"name": "blue", "hexCode": "#0000FF"},]
+}); //  "["name": "blue", "hexCode": "#0000FF"]"
 
 //--------------------Get All Products-------------------
 const getAllProducts = asyncHandler(async (req, res) => {
@@ -86,7 +100,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({})
       .limit(12)
       .sort({ createdAt: -1 })
-      .populate("category", "name slug")
+      .populate("category", "name slug categoryType")
       .exec();
 
     if (!products) {
@@ -319,7 +333,7 @@ const addToWishlist = asyncHandler(async (req, res) => {
   }
 });
 
-//--------------------Remove from Wishlist------------------
+//--------------------Remove from Wishlist---------------
 const removeFromWishlist = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   const userId = req.user?.id;
@@ -368,9 +382,110 @@ const removeFromWishlist = asyncHandler(async (req, res) => {
   }
 });
 
+//--------------------Get Home page products-------------
+const getHomeProducts = asyncHandler(async (req, res) => {
+  try {
+    // Trending and Best Seller Products
+    const trendingProducts = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .populate("category")
+      .lean();
+    const bestSellerProducts = await Product.find({ bestSeller: true })
+      .limit(6)
+      .populate("category")
+      .lean();
+
+    // Category-wise products fetching manually
+    const shoesCategory = await Category.findOne({ name: "Shoes" }).lean();
+    const sareeCategory = await Category.findOne({ name: "Saree" }).lean();
+    const mobileCategory = await Category.findOne({ name: "Mobile" }).lean();
+
+    const shoesProducts = shoesCategory
+      ? await Product.find({ category: shoesCategory._id })
+          .limit(6)
+          .populate("category")
+          .lean()
+      : [];
+    const sareeProducts = sareeCategory
+      ? await Product.find({ category: sareeCategory._id })
+          .limit(6)
+          .populate("category")
+          .lean()
+      : [];
+    const mobileProducts = mobileCategory
+      ? await Product.find({ category: mobileCategory._id })
+          .limit(6)
+          .populate("category")
+          .lean()
+      : [];
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          trendingProducts,
+          bestSellerProducts,
+          shoesProducts,
+          sareeProducts,
+          mobileProducts,
+        },
+        "Home products fetched successfully"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(500, `Something went wrong: ${error.message}`);
+  }
+});
+
+//--------------Get single and Related products-----------
+const getSingleAndRelatedProducts = asyncHandler(async (req, res) => {
+  const { id: productId } = req.params;
+
+  if (!productId) {
+    throw new ApiError(400, "Product ID is required");
+  }
+
+  try {
+    // Fetch the single product
+    const product = await Product.findById(productId).lean();
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    // Ensure the product has a category before querying related products
+    let relatedProducts = [];
+    if (product.category) {
+      relatedProducts = await Product.find({
+        category: product.category,
+        _id: { $ne: productId }, // Exclude the current product
+      })
+        .limit(12)
+        .lean();
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          totalRelatedProducts: relatedProducts.length,
+          product,
+          relatedProducts,
+        },
+        "Products fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    throw new ApiError(500, `Something went wrong: ${error.message}`);
+  }
+});
+
 export {
   addProduct,
   getAllProducts,
+  getHomeProducts,
+  getSingleAndRelatedProducts,
   getProductById,
   addToCart,
   removeFromCart,

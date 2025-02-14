@@ -6,6 +6,7 @@ import DashboardLayout from "./layout/DashboadLayout";
 import DashboardPage from "./pages/DashboardPage";
 import CategoriesPage from "./pages/CategoryPage";
 import AddProductPage from "./pages/AddProductPage";
+import ProductManagement from "./pages/ProductManage";
 
 const router=createBrowserRouter([
     {
@@ -17,12 +18,16 @@ const router=createBrowserRouter([
             element: <DashboardPage />,
           },
           {
-            path: "category",
+            path: "admin/category",
             element: <CategoriesPage />,
           },
           {
-            path: "add-product",
+            path: "admin/add-product",
             element: <AddProductPage />,
+          },
+          {
+            path: "admin/product-management",
+            element: <ProductManagement />,
           }
 
         ]

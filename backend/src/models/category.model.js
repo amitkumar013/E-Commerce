@@ -6,8 +6,9 @@ const categorySchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    description: {
+    categoryType: {
       type: String,
+      required: true
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,

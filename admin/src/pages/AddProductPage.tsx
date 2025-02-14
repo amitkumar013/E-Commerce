@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,11 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+interface Category {
+  _id: string;
+  name: string;
+}
+
 export default function AddProduct() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -22,9 +27,12 @@ export default function AddProduct() {
   const [quantity, setQuantity] = useState("");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [discount, setDiscount] = useState("No Discount");
-  const [delivery, setDelivery] = useState("free");
+  const [discount, setDiscount] = useState("");
+  const [delivery, setDelivery] = useState("");
   const [brand, setBrand] = useState("yes");
+  const [stock, setStock] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [images, setImages] = useState<{ [key: string]: File | null }>({
     image1: null,
     image2: null,
@@ -61,6 +69,31 @@ export default function AddProduct() {
     }
   };
 
+  //-------------Get All Categories------------
+  const getAllCategories = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:8000/api/v1/categorys/get-all-category",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data?.success) {
+        setCategories(data.data);
+      } else {
+        toast.error("Failed to fetch categories");
+      }
+    } catch (error) {
+      toast.error("Couldn't get categories");
+    }
+  };
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
+  //-----------Create a new product------------
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !description || !price || !colors || !sizes) {
@@ -79,6 +112,8 @@ export default function AddProduct() {
       productData.append("discount", discount);
       productData.append("delivery", delivery);
       productData.append("brand", brand);
+      productData.append("stock", stock);
+      productData.append("category", selectedCategory);
 
       Object.entries(images).forEach(([key, file]) => {
         if (file) {
@@ -98,7 +133,7 @@ export default function AddProduct() {
       );
 
       if (data?.success) {
-        toast.success("🎉 Product added successfully");
+        toast.success("🎉 Product create successfully");
 
         setName("");
         setDescription("");
@@ -106,9 +141,11 @@ export default function AddProduct() {
         setQuantity("");
         setSelectedColors([]);
         setSelectedSizes([]);
-        setDiscount("No Discount");
-        setDelivery("free");
+        setDiscount("");
+        setDelivery("");
         setBrand("yes");
+        setStock("");
+        setSelectedCategory("");
         setImages({ image1: null, image2: null, image3: null, image4: null });
         navigate("/");
       } else {
@@ -137,6 +174,23 @@ export default function AddProduct() {
             onChange={(e) => setName(e.target.value)}
             required
           />
+        </div>
+
+         {/* Category */}
+         <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((c) => (
+                <SelectItem key={c._id} value={c.name}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Images Upload */}
@@ -260,7 +314,7 @@ export default function AddProduct() {
           <Label htmlFor="discount">Discount</Label>
           <Select value={discount} onValueChange={setDiscount}>
             <SelectTrigger>
-              <SelectValue placeholder="Select discount" />
+              <SelectValue placeholder="Select discount option" />
             </SelectTrigger>
             <SelectContent>
               {discounts.map((d) => (
@@ -283,6 +337,22 @@ export default function AddProduct() {
               <SelectItem value="free">Free</SelectItem>
               <SelectItem value="express">Express</SelectItem>
               <SelectItem value="standard">Standard</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Stock */}
+        <div className="space-y-2">
+          <Label htmlFor="stock">Stock</Label>
+          <Select value={stock} onValueChange={setStock}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select stock option" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="in stock">In Stock</SelectItem>
+              <SelectItem value="high stock">High Stock</SelectItem>
+              <SelectItem value="low stock">Low Stock</SelectItem>
+              <SelectItem value="out of stock">Out of Stock</SelectItem>
             </SelectContent>
           </Select>
         </div>

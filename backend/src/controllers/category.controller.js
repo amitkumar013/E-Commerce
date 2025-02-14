@@ -6,13 +6,16 @@ import slugify from "slugify";
 
 //---------------------Create a new category----------------
 const createCategories = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  const { name, categoryType } = req.body;
   const ownerId = req.user?.id;
   if (!ownerId) {
     throw new ApiError(401, "Unauthorized User");
   }
   if (!name) {
     throw new ApiError(400, "Category Name is required");
+  }
+  if (!categoryType) {
+    throw new ApiError(400, "Category Type is required");
   }
   const existingCategory = await Category.findOne({ name });
   if (existingCategory) {
@@ -22,7 +25,7 @@ const createCategories = asyncHandler(async (req, res) => {
   try {
     const newCategory = new Category({
       name: name,
-      description: description,
+      categoryType: categoryType,
       ownerId: ownerId,
       slug: slugify(name, { lower: true }),
     });
@@ -79,7 +82,7 @@ const getCategoryById = asyncHandler(async (req, res) => {
 
 //---------------------Update a category--------------------
 const updateCategory = asyncHandler(async (req, res) => {
-    const { name, description } = req.body;
+    const { name, categoryType } = req.body;
     const ownerId = req.user?.id;
     const categoryId = req.params.id;
   
@@ -94,13 +97,16 @@ const updateCategory = asyncHandler(async (req, res) => {
     if (!name) {
       throw new ApiError(400, "Category Name is required");
     }
+    if (!categoryType) {
+      throw new ApiError(400, "Category Type is required");
+    }
   
     try {
       const category = await Category.findByIdAndUpdate(
         categoryId,
         { 
-          name: name, 
-          description: description, 
+          name: name,
+          categoryType: categoryType, 
           slug: slugify(name, { lower: true }) 
         },
         { new: true }
@@ -119,7 +125,6 @@ const updateCategory = asyncHandler(async (req, res) => {
     }
   });
   
-
 //---------------------Delete a category--------------------
 const deleteCategory = asyncHandler(async (req, res) => {
   const ownerId = req.user?.id;
@@ -150,4 +155,3 @@ export {
   updateCategory,
   deleteCategory,
 };
- 
