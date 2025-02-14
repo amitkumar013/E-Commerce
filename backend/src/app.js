@@ -19,6 +19,7 @@ app.use(cookieParser())
 import userRouter from './routes/user.route.js';
 import productRouter from './routes/product.route.js';
 import categoryRouter from './routes/category.route.js'
+import adminRouter from "./routes/adminProduct.route.js"
 
 
 // http://localhost:8000/api/v1/users/register
@@ -26,6 +27,7 @@ import categoryRouter from './routes/category.route.js'
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/categorys", categoryRouter);
+app.use("/api/v1/admin-products", adminRouter)
 
 
 export default app;

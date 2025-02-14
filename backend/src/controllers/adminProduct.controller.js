@@ -15,9 +15,7 @@ const getAdminDetails = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Admin user not found");
   }
 
-  return res
-  .status(200)
-  .json(new ApiResponse(200, user));
+  return res.status(200).json(new ApiResponse(200, user));
 });
 
 //--------------------Get Admin All Products--------------
@@ -28,7 +26,13 @@ const getAdminProducts = asyncHandler(async (req, res) => {
   }
   try {
     const products = await Product.find({ ownerId: userId });
-    return res.json(new ApiResponse(200, products, "Products fetched successfully"));
+    return res.json(
+      new ApiResponse(200, {
+        totalProduct: products.length,
+        products,
+        message: "Products fetched successfully",
+      })
+    );
   } catch (error) {
     throw new ApiError(500, "Something went wrong");
   }
@@ -49,7 +53,9 @@ const getAdminProductById = asyncHandler(async (req, res) => {
     if (!product) {
       throw new ApiError(404, "Product not found");
     }
-    return res.json(new ApiResponse(200, product, "Product fetched successfully"));
+    return res.json(
+      new ApiResponse(200, product, "Product fetched successfully")
+    );
   } catch (error) {
     throw new ApiError(500, "Something went wrong", error.message);
   }
@@ -74,7 +80,9 @@ const updateAdminProduct = asyncHandler(async (req, res) => {
     if (!product) {
       throw new ApiError(404, "Product not update try again");
     }
-    return res.json(new ApiResponse(200, product, "Product updated successfully"));
+    return res.json(
+      new ApiResponse(200, product, "Product updated successfully")
+    );
   } catch (error) {
     throw new ApiError(500, "Something went wrong", error.message);
   }
@@ -91,21 +99,23 @@ const deleteAdminProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Product is not available");
   }
   try {
-    const product = await Product.findOneAndDelete({ _id: productId, ownerId: userId });
+    const product = await Product.findOneAndDelete({
+      _id: productId,
+      ownerId: userId,
+    });
     if (!product) {
       throw new ApiError(404, "Product not found");
     }
-    return res.json(new ApiResponse(200, product, "Product deleted successfully"));
+    return res.json(new ApiResponse(200, {}, "Product deleted successfully"));
   } catch (error) {
     throw new ApiError(500, "Something went wrong", error.message);
   }
 });
 
-
 export {
-    getAdminDetails,
-    getAdminProducts,
-    getAdminProductById,
-    updateAdminProduct,
-    deleteAdminProduct,
+  getAdminDetails,
+  getAdminProducts,
+  getAdminProductById,
+  updateAdminProduct,
+  deleteAdminProduct,
 };

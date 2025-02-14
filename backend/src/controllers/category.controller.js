@@ -82,49 +82,49 @@ const getCategoryById = asyncHandler(async (req, res) => {
 
 //---------------------Update a category--------------------
 const updateCategory = asyncHandler(async (req, res) => {
-    const { name, categoryType } = req.body;
-    const ownerId = req.user?.id;
-    const categoryId = req.params.id;
-  
-    if (!ownerId) {
-      throw new ApiError(401, "Unauthorized User");
+  const { name, categoryType } = req.body;
+  const ownerId = req.user?.id;
+  const categoryId = req.params.id;
+
+  if (!ownerId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+
+  if (!categoryId) {
+    throw new ApiError(400, "Category ID is required");
+  }
+
+  if (!name) {
+    throw new ApiError(400, "Category Name is required");
+  }
+  if (!categoryType) {
+    throw new ApiError(400, "Category Type is required");
+  }
+
+  try {
+    const category = await Category.findByIdAndUpdate(
+      categoryId,
+      {
+        name: name,
+        categoryType: categoryType,
+        slug: slugify(name, { lower: true }),
+      },
+      { new: true }
+    );
+
+    if (!category) {
+      throw new ApiError(404, "Category not found");
     }
-  
-    if (!categoryId) {
-      throw new ApiError(400, "Category ID is required");
-    }
-  
-    if (!name) {
-      throw new ApiError(400, "Category Name is required");
-    }
-    if (!categoryType) {
-      throw new ApiError(400, "Category Type is required");
-    }
-  
-    try {
-      const category = await Category.findByIdAndUpdate(
-        categoryId,
-        { 
-          name: name,
-          categoryType: categoryType, 
-          slug: slugify(name, { lower: true }) 
-        },
-        { new: true }
-      );
-  
-      if (!category) {
-        throw new ApiError(404, "Category not found");
-      }
-  
-      return res
-        .status(200)
-        .json(new ApiResponse(200, category, "Category updated successfully"));
-    } catch (error) {
-      console.error("Update Error:", error);
-      throw new ApiError(500, error.message);
-    }
-  });
-  
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, category, "Category updated successfully"));
+  } catch (error) {
+    console.error("Update Error:", error);
+    throw new ApiError(500, error.message);
+  }
+});
+
 //---------------------Delete a category--------------------
 const deleteCategory = asyncHandler(async (req, res) => {
   const ownerId = req.user?.id;
