@@ -1,88 +1,141 @@
-import * as React from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const SLIDE_DURATION = 4000;
 
 const images = [
   {
-    url: "https://img.freepik.com/premium-vector/online-shopping-background-digital-market-website-mobile-app_269039-163.jpg?semt=ais_hybrid",
-    alt: "Slide 1",
+    url: "https://images.unsplash.com/photo-1541560052-5e137f229371?q=80&w=2940&auto=format&fit=crop",
+    alt: "Premium Headphones",
+    title: "Premium Audio Experience",
   },
   {
-    url: "https://img.freepik.com/free-psd/horizontal-banner-template-big-sale-with-woman-shopping-bags_23-2148786755.jpg",
-    alt: "Slide 2",
+    url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2899&auto=format&fit=crop",
+    alt: "Smart Watch",
+    title: "Next-Gen Wearable",
   },
   {
-    url: "https://s.tmimgcdn.com/scr/1200x627/375400/big-sale-on-store-and-online-sale-banner-design-template_375459-original.jpg",
-    alt: "Slide 3",
+    url: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=2864&auto=format&fit=crop",
+    alt: "Laptop",
+    title: "Professional Workstation",
   },
   {
-    url: "https://t3.ftcdn.net/jpg/04/38/59/88/360_F_438598896_D9pyLmbMZ02CrxURfHxU4nG5UlzXv6Dy.jpg",
-    alt: "Slide 4",
+    url: "https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=2864&auto=format&fit=crop",
+    alt: "Earbuds",
+    title: "Wireless Freedom",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1507764923504-cd90bf7da772?q=80&w=2947&auto=format&fit=crop",
+    alt: "Smartphone",
+    title: "Connected Living",
   },
 ];
 
-export function AutoCarousel() {
-  const [currentSlide, setCurrentSlide] = React.useState(0);
+export const AutoCarousel = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right">("right");
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 4500);
-
-    return () => clearInterval(interval);
+  const nextSlide = useCallback(() => {
+    setDirection("right");
+    setCurrentSlide((prev) => (prev + 1) % images.length);
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
+    setDirection("left");
     setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (isHovered) return;
+
+    const timer = setInterval(nextSlide, SLIDE_DURATION);
+    return () => clearInterval(timer);
+  }, [nextSlide, isHovered]);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto px-4 py-8">
-      <div className="relative aspect-[2/1] overflow-hidden rounded-xl">
+    <div
+      className="relative w-full overflow-hidden group"
+      onMouseEnter={() => setIsHovered(false)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative h-[50vh] md:h-[70vh] w-full">
         {images.map((image, index) => (
           <div
             key={index}
-            className="absolute w-full h-full transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(${(index - currentSlide) * 100}%)` }}
+            className={cn(
+              "absolute inset-0 transform transition-all duration-700 ease-in-out",
+              currentSlide === index
+                ? "opacity-100 translate-x-0"
+                : direction === "right"
+                ? `opacity-0 ${
+                    index < currentSlide
+                      ? "translate-x-[-100%]"
+                      : "translate-x-[100%]"
+                  }`
+                : `opacity-0 ${
+                    index < currentSlide
+                      ? "translate-x-[100%]"
+                      : "translate-x-[-100%]"
+                  }`
+            )}
           >
             <img
               src={image.url}
               alt={image.alt}
-              className="object-cover w-full h-auto"
-              loading={index === 0 ? "eager" : "lazy"}
+              className="object-cover w-full h-full"
+              loading="lazy"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+              <p className="text-sm uppercase tracking-wider mb-2">
+                Featured Product
+              </p>
+              <h2 className="text-3xl md:text-4xl font-medium">
+                {image.title}
+              </h2>
+            </div>
           </div>
         ))}
       </div>
-      {/* Navigation Arrows */}
+
+      {/* Navigation Controls */}
       <button
         onClick={prevSlide}
-        className="absolute left-8 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 p-2 rounded-full shadow-lg z-20 hidden md:block"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-white/20"
         aria-label="Previous slide"
       >
-        <ArrowLeft className="w-6 h-6" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
+
       <button
         onClick={nextSlide}
-        className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 p-2 rounded-full shadow-lg z-20 hidden md:block"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-white/20"
         aria-label="Next slide"
       >
-        <ArrowRight className="w-6 h-6" />
+        <ChevronRight className="w-6 h-6" />
       </button>
-      {/* Navigation Dots */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
         {images.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${index === currentSlide ? "bg-white scale-110" : "bg-green-400 hover:bg-white/75"}`}
+            onClick={() => {
+              setDirection(index > currentSlide ? "right" : "left");
+              setCurrentSlide(index);
+            }}
+            className={cn(
+              "w-2 h-2 rounded-full transition-all duration-300",
+              currentSlide === index
+                ? "bg-white w-6"
+                : "bg-white/50 hover:bg-white/75"
+            )}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
     </div>
   );
-}
+};
