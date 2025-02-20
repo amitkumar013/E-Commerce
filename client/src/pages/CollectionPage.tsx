@@ -139,7 +139,7 @@ export default function CollectionPage() {
               filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
             ) : (
               <p className="text-gray-500">No products found.</p>
-            )}
+            )}22
           </div>
           </Link>
            
