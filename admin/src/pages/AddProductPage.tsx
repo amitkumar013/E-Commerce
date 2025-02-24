@@ -27,9 +27,8 @@ export default function AddProduct() {
   const [quantity, setQuantity] = useState("");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [discount, setDiscount] = useState("");
   const [delivery, setDelivery] = useState("");
-  const [brand, setBrand] = useState("yes");
+  const [brand, setBrand] = useState("");
   const [stock, setStock] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -39,7 +38,6 @@ export default function AddProduct() {
     image3: null,
     image4: null,
   });
-  const [loading, setLoading] = useState(false);
   const colors = [
     "Black",
     "White",
@@ -51,7 +49,9 @@ export default function AddProduct() {
     "Gray",
   ];
   const sizes = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
-  const discounts = ["No Discount", "10%", "20%", "30%", "40%", "50%"];
+  const [discountPrice, setDiscountPrice] = useState("");
+  const [discountPercentage, setDiscountPercentage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   //const token = JSON.parse(localStorage.getItem("auth") || "{}")?.data?.token || "";
@@ -96,20 +96,20 @@ export default function AddProduct() {
   //-----------Create a new product------------
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !description || !price || !colors || !sizes) {
+    if (!name || !description || !price || !colors || !sizes || !selectedCategory) {
       return toast.error("Please fill all required fields");
     }
-
     try {
       setLoading(true);
       const productData = new FormData();
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price);
+      productData.append("discountPrice", discountPrice);
+      productData.append("discountPercentage", discountPercentage);
       productData.append("quantity", quantity);
       productData.append("colors", JSON.stringify(selectedColors));
       productData.append("sizes", JSON.stringify(selectedSizes));
-      productData.append("discount", discount);
       productData.append("delivery", delivery);
       productData.append("brand", brand);
       productData.append("stock", stock);
@@ -138,10 +138,11 @@ export default function AddProduct() {
         setName("");
         setDescription("");
         setPrice("");
+        setDiscountPrice("");
+        setDiscountPercentage("");
         setQuantity("");
         setSelectedColors([]);
         setSelectedSizes([]);
-        setDiscount("");
         setDelivery("");
         setBrand("yes");
         setStock("");
@@ -149,7 +150,7 @@ export default function AddProduct() {
         setImages({ image1: null, image2: null, image3: null, image4: null });
         navigate("/");
       } else {
-        toast.error("⚠️ Failed to add product");
+        toast.error("⚠️ Required all the fields.");
       }
     } catch (error) {
       toast.error("❌ Error submitting product");
@@ -185,8 +186,8 @@ export default function AddProduct() {
             </SelectTrigger>
             <SelectContent>
               {categories.map((c) => (
-                <SelectItem key={c._id} value={c.name}>
-                  {c.name}
+                <SelectItem key={c._id} value={c._id}>  {/* Send _id */}
+                  {c.name} {/* Show name but store _id */}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -235,7 +236,7 @@ export default function AddProduct() {
           />
         </div>
 
-        {/* Price & Quantity */}
+        {/* Price & DiscountPrice & DiscountPercentage & Quantity */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="price">Price</Label>
@@ -249,6 +250,33 @@ export default function AddProduct() {
               required
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="discount price">Discount Price</Label>
+            <Input
+              id="discount price"
+              placeholder="Enter discount price"
+              type="number"
+              min="0"
+              value={discountPrice}
+              onChange={(e) => setDiscountPrice(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="discount percentage">Discount Percentage</Label>
+            <Input
+              id="discount percentage"
+              placeholder="Enter discount percentage"
+              type="number"
+              min="0"
+              value={discountPercentage}
+              onChange={(e) => setDiscountPercentage(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="quantity">Quantity</Label>
             <Input
@@ -309,23 +337,6 @@ export default function AddProduct() {
           </div>
         </div>
 
-        {/* Discount */}
-        <div className="space-y-2">
-          <Label htmlFor="discount">Discount</Label>
-          <Select value={discount} onValueChange={setDiscount}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select discount option" />
-            </SelectTrigger>
-            <SelectContent>
-              {discounts.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Delivery */}
         <div className="space-y-2">
           <Label htmlFor="delivery">Delivery</Label>
@@ -334,9 +345,9 @@ export default function AddProduct() {
               <SelectValue placeholder="Select delivery option" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="free">Free</SelectItem>
-              <SelectItem value="express">Express</SelectItem>
-              <SelectItem value="standard">Standard</SelectItem>
+              <SelectItem value="free delivery">Free delivery</SelectItem>
+              <SelectItem value="express delivery">Express delivery</SelectItem>
+              <SelectItem value="standard delivery">Standard delivery</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -350,7 +361,6 @@ export default function AddProduct() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="in stock">In Stock</SelectItem>
-              <SelectItem value="high stock">High Stock</SelectItem>
               <SelectItem value="low stock">Low Stock</SelectItem>
               <SelectItem value="out of stock">Out of Stock</SelectItem>
             </SelectContent>
@@ -359,16 +369,13 @@ export default function AddProduct() {
 
         {/* Brand */}
         <div className="space-y-2">
-          <Label htmlFor="brand">Brand</Label>
-          <Select defaultValue="Yes">
-            <SelectTrigger>
-              <SelectValue placeholder="Select brand option" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="yes">Yes</SelectItem>
-              <SelectItem value="no">No</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label htmlFor="brand">Brand Name</Label>
+          <Input
+            id="brand"
+            placeholder="Enter brand name"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          />
         </div>
 
         <Button type="submit" className="w-full md:w-auto" disabled={loading}>

@@ -27,7 +27,6 @@ const addProduct = asyncHandler(async (req, res) => {
     stock,
   } = req.body;
 
-  // Validation check
   if (
     !name ||
     !price ||
@@ -41,6 +40,11 @@ const addProduct = asyncHandler(async (req, res) => {
   }
   if (!category) {
     throw new ApiError(400, "Category is required");
+  }
+
+  const categoryId = await Category.findById(category);
+  if (!categoryId) {
+    throw new ApiError(404, "Invalid category selected");
   }
 
   // Parse colors and sizes correctly
@@ -80,7 +84,7 @@ const addProduct = asyncHandler(async (req, res) => {
     ratings,
     quantity,
     colors: colorArray,
-    category,
+    category: categoryId._id,
     wishlist,
     delivery,
     brand,
@@ -388,37 +392,47 @@ const getHomeProducts = asyncHandler(async (req, res) => {
     // Trending and Best Seller Products
     const trendingProducts = await Product.find()
       .sort({ createdAt: -1 })
-      .limit(6)
+      .limit(8)
       .populate("category")
       .lean();
     const bestSellerProducts = await Product.find({ bestSeller: true })
-      .limit(6)
+      .limit(8)
       .populate("category")
       .lean();
 
     // Category-wise products fetching manually
-    const shoesCategory = await Category.findOne({ name: "Shoes" }).lean();
-    const sareeCategory = await Category.findOne({ name: "Saree" }).lean();
-    const mobileCategory = await Category.findOne({ name: "Mobile" }).lean();
+    const shoesCategory = await Category.findOne({ name: "shoes" }).lean();
+    const sareeCategory = await Category.findOne({ name: "saree" }).lean();
+    const mobileCategory = await Category.findOne({ name: "mobile" }).lean();
 
     const shoesProducts = shoesCategory
       ? await Product.find({ category: shoesCategory._id })
-          .limit(6)
+          //.where({ name: "Shoes" })
+          .sort({createdAt: -1})
+          .limit(8)
           .populate("category")
           .lean()
       : [];
     const sareeProducts = sareeCategory
       ? await Product.find({ category: sareeCategory._id })
-          .limit(6)
+          .sort({createdAt: -1})
+          .limit(8)
           .populate("category")
           .lean()
       : [];
     const mobileProducts = mobileCategory
       ? await Product.find({ category: mobileCategory._id })
-          .limit(6)
+          .sort({ createdAt: -1 })
+          .limit(8)
           .populate("category")
           .lean()
       : [];
+
+    console.log("TotalTranding:"+ trendingProducts.length)
+    console.log("TotalBestSeller:"+ bestSellerProducts.length)
+    console.log("TotalShoes:"+ shoesProducts.length)
+    console.log("TotalSaree:"+ sareeProducts.length)
+    console.log("TotalMobile:"+ mobileProducts.length)
 
     return res.status(200).json(
       new ApiResponse(
@@ -480,6 +494,7 @@ const getSingleAndRelatedProducts = asyncHandler(async (req, res) => {
     throw new ApiError(500, `Something went wrong: ${error.message}`);
   }
 });
+
 
 export {
   addProduct,

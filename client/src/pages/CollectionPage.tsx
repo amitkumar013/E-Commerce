@@ -16,11 +16,8 @@ interface Product {
   brand: string;
 }
 
-// Categories
 const categories = ["Electronics", "Fashion", "Home", "Beauty"];
-// Brands
 const brands = ["Apple", "Samsung", "Nike", "Adidas", "Sony"];
-// Price Ranges
 const priceRanges = [
   { label: "Under ₹500", min: 0, max: 500 },
   { label: "₹500 - ₹1000", min: 500, max: 1000 },
@@ -52,7 +49,7 @@ export default function CollectionPage() {
         rating: 0,
         price: product.price,
         category: product.category || "Others",
-        brand: product.brand || "Unknown", // Ensure brand is mapped
+        brand: product.brand || "Unknown",
       }));
 
       setProducts(mappedProducts);
@@ -116,7 +113,6 @@ export default function CollectionPage() {
       <AutoCarousel />
 
       <div className="flex flex-col md:flex-row gap-6 mt-5">
-        {/* Filters Component */}
         <Filters
           categories={categories}
           brands={brands}
@@ -130,7 +126,6 @@ export default function CollectionPage() {
           resetFilters={resetFilters}
         />
 
-        {/* Product List */}
         <section className="w-full md:w-3/4">
           <h1 className="text-2xl font-bold mb-5 text-center">All Products</h1>
           <Link to={"/products/slug"}>
@@ -276,4 +271,3 @@ export default function CollectionPage() {
 //     </div>
 //   );
 // }
-

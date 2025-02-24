@@ -11,30 +11,38 @@ const createCategories = asyncHandler(async (req, res) => {
   if (!ownerId) {
     throw new ApiError(401, "Unauthorized User");
   }
-  if (!name) {
+  if (!name?.trim()) {
     throw new ApiError(400, "Category Name is required");
   }
-  if (!categoryType) {
+  if (!categoryType?.trim()) {
     throw new ApiError(400, "Category Type is required");
   }
-  const existingCategory = await Category.findOne({ name });
+
+  const normalizedCategoryName = name.trim().toLowerCase();
+  const existingCategory = await Category.findOne({
+    ownerId, 
+    name: { $regex: `^${normalizedCategoryName}$`, $options: "i" }
+  });
+
   if (existingCategory) {
     throw new ApiError(400, "Category already exists");
   }
 
   try {
     const newCategory = new Category({
-      name: name,
-      categoryType: categoryType,
+      name: normalizedCategoryName,
+      categoryType: categoryType.trim(),
       ownerId: ownerId,
-      slug: slugify(name, { lower: true }),
+      slug: slugify(normalizedCategoryName, { lower: true }),
     });
+
     await newCategory.save();
+
     return res
       .status(201)
       .json(new ApiResponse(201, newCategory, "Category created successfully"));
   } catch (error) {
-    throw new ApiError(500, error.message);
+    throw new ApiError(500,"Something went wrong?", error.message);
   }
 });
 

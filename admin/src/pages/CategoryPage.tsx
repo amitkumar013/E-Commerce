@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 type Category = {
   _id: string;
   name: string;
-  description: string;
+  categoryType: string;
 };
 
 export default function CategoriesPage() {
@@ -34,9 +34,9 @@ export default function CategoriesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [categoryType, setCategoryType] = useState("");
   const [editName, setEditName] = useState("");
-  const [editDescription, setEditDescription] = useState("");
+  const [editCategoryType, setEditCategoryType] = useState("");
 
   const authData = localStorage.getItem("auth");
   const parsedAuth = authData ? JSON.parse(authData) : null;
@@ -44,7 +44,7 @@ export default function CategoriesPage() {
 
   //-------------Get All Categories------------
   const getAllCategories = async () => {
-    try {
+    
       const { data } = await axios.get(
         "http://localhost:8000/api/v1/categorys/get-all-category",
         {
@@ -58,9 +58,6 @@ export default function CategoriesPage() {
       } else {
         toast.error("Failed to fetch categories");
       }
-    } catch (error) {
-      toast.error("Couldn't get categories");
-    }
   };
   useEffect(() => {
     getAllCategories();
@@ -72,7 +69,7 @@ export default function CategoriesPage() {
     try {
       const { data } = await axios.post(
         "http://localhost:8000/api/v1/categorys/create-category",
-        { name, description },
+        { name, categoryType },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -83,7 +80,7 @@ export default function CategoriesPage() {
         toast.success(`${name} is created`);
         getAllCategories();
         setName("");
-        setDescription("");
+        setCategoryType("");
         setIsDialogOpen(false);
       } else {
         toast.error("Failed to create category");
@@ -107,7 +104,7 @@ export default function CategoriesPage() {
     try {
       const { data } = await axios.patch(
         `http://localhost:8000/api/v1/categorys/update-category/${editingCategory._id}`,
-        { name: editName, description: editDescription },
+        { name: editName, categoryType: editCategoryType },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -120,7 +117,7 @@ export default function CategoriesPage() {
         getAllCategories();
         setEditingCategory(null);
         setEditName("");
-        setEditDescription("");
+        setEditCategoryType("");
         setIsDialogOpen(false);
       } else {
         toast.error("Failed to update category");
@@ -155,14 +152,13 @@ export default function CategoriesPage() {
   const filteredCategories = categories.filter(
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchTerm.toLowerCase())
+      category.categoryType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Categories</h1>
 
-      {/* TODO: Search Category */}
       <div className="relative w-full sm:w-64 mb-4">
         <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <Input
@@ -182,7 +178,6 @@ export default function CategoriesPage() {
         )}
       </div>
 
-      {/* TODO: Create & Update Category Modal */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button>
@@ -196,32 +191,33 @@ export default function CategoriesPage() {
             </DialogTitle>
           </DialogHeader>
 
-          {/* TODO: Input field for category name */}
           <div className="grid gap-4 py-4">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Category Name</Label>
             <Input
               id="name"
+              placeholder="Category Name"
               value={editingCategory ? editName : name}
+              required
               onChange={(e) =>
                 editingCategory
                   ? setEditName(e.target.value)
                   : setName(e.target.value)
               }
             />
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="categoryType">Category Type</Label>
             <Input
-              id="description"
-              value={editingCategory ? editDescription : description}
+              id="categoryType"
+              placeholder="Ex-> Man, Women, Clothing or Electronic"
+              value={editingCategory ? editCategoryType : categoryType}
               onChange={(e) =>
                 editingCategory
-                  ? setEditDescription(e.target.value)
-                  : setDescription(e.target.value)
+                  ? setEditCategoryType(e.target.value)
+                  : setCategoryType(e.target.value)
               }
             />
           </div>
 
           <DialogFooter>
-            {/* TODO: Create new category or update existing category */}
             <Button
               onClick={
                 editingCategory ? handleUpdateCategory : handleCreateCategory
@@ -233,12 +229,11 @@ export default function CategoriesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* TODO: Display list of categories */}
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead>Category Name</TableHead>
+            <TableHead>Category Type</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -247,7 +242,7 @@ export default function CategoriesPage() {
           {filteredCategories.map((category) => (
             <TableRow key={category._id}>
               <TableCell>{category.name}</TableCell>
-              <TableCell>{category.description}</TableCell>
+              <TableCell>{category.categoryType}</TableCell>
               <TableCell>
                 Edit
                 <Button
@@ -257,12 +252,13 @@ export default function CategoriesPage() {
                     console.log("Editing category set to:", category);
                     setEditingCategory(category);
                     setEditName(category.name);
-                    setEditDescription(category.description);
+                    setEditCategoryType(category.categoryType);
                     setIsDialogOpen(true);
                   }}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
+
                 Delete
                 <Button
                   variant="ghost"
@@ -271,6 +267,7 @@ export default function CategoriesPage() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+                
               </TableCell>
             </TableRow>
           ))}
