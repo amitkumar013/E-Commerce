@@ -83,7 +83,7 @@ export function HomePage() {
                   ref={(el) => (scrollContainerRefs.current[categoryIndex] = el)}
                   className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
                 >
-                  <Link to={"/product-details"} className="grid grid-flow-col gap-4">
+                  <Link to={"/product-details/:id"} className="grid grid-flow-col gap-4">
                     {loading ? (
                       <p className="text-center text-gray-500">Loading products...</p>
                     ) : categoryProducts.length > 0 ? (

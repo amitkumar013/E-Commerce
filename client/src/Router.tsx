@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import CollectionPage from "@/pages/CollectionPage";
 import { HomePage } from "./pages/HomePage";
+import { ProductDetails } from "./pages/ProductDetails";
 
 const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
             path: "collection",
             element: <CollectionPage />,
           },
+          {
+            path: "product-details/:id",
+            element: <ProductDetails />,
+          }
         ]
     },
 
