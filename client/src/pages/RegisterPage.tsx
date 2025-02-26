@@ -14,6 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -27,7 +28,8 @@ export default function RegisterPage() {
     const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/users/register", {
+      const URI = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${URI}/users/register`, {
         name,
         email,
         password,
@@ -41,10 +43,10 @@ export default function RegisterPage() {
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate("/");
       } else {
-        console.log("Register failed");
+        toast.error("Registration failed");
       }
     } catch (error) {
-      console.error("An error occurred while submitting the register form", error);
+      toast.error("An error occurred while registering");
     }
     };
 

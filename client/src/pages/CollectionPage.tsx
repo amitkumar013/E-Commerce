@@ -37,7 +37,8 @@ export default function CollectionPage() {
   // Fetch all products
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8000/api/v1/products/");
+      const URI = import.meta.env.VITE_BACKEND_URL;
+      const { data } = await axios.get(`${URI}/products/`);
       const productsData = data.products;
       if (!productsData) throw new Error("Products data is undefined");
 

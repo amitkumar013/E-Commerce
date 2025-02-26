@@ -14,6 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,8 @@ export default function LoginPage() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/users/login", {
+      const URI = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${URI}/users/login`, {
         email,
         password,
       });
@@ -38,11 +40,9 @@ export default function LoginPage() {
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate("/");
-      } else {
-        console.log("Invalid email or password");
-      }
+      }  
     } catch (error) {
-      console.error("An error occurred while submitting the login form", error);
+      toast.error("Invalid email or password");
     }
   };
 

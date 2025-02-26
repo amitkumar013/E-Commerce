@@ -7,6 +7,7 @@ import {
     getAllProducts,
     getHomeProducts,
     getProductById,
+    getSimilarProducts,
     getSingleAndRelatedProducts,
     ratingProduct,
     removeFromCart,
@@ -25,10 +26,10 @@ router.route("/add").post(verifyJWT,
     ]),
     addProduct
 )
-
 router.route("/").get(getAllProducts);
 router.route("/home-products").get(getHomeProducts)
 router.route("/related-products/:id").get(getSingleAndRelatedProducts)
+router.route("/similar-products/:pid/:cid").get(getSimilarProducts)
 
 router.route("/:id").get(getProductById);
 router.route("/add-cart/:id").patch(verifyJWT, addToCart)

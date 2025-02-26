@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FC } from "react";
 
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   images?: string[];
   price: number;

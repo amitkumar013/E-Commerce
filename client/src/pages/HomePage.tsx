@@ -5,6 +5,7 @@ import HomeProductCard from "@/components/HomeProductCard";
 import { AutoCarousel } from "@/components/AutoCarousel";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface Product {
   _id: string;
@@ -16,7 +17,6 @@ interface Product {
   delivery: string | number;
   stock: string;
 }
-
 const categories = ["Best Sellers", "Trending", "Shoes", "Saree", "Mobile"];
 
 export function HomePage() {
@@ -26,15 +26,16 @@ export function HomePage() {
 
   // Fetch home products
   const getHomeProducts = async () => {
+    const URI = import.meta.env.VITE_BACKEND_URL;
     try {
-      const { data } = await axios.get("http://localhost:8000/api/v1/products/home-products");
+      const { data } = await axios.get(`${URI}/products/home-products`);
       if (!data?.data) throw new Error("Invalid product data");
-  
-      const validateProducts = (items: Product[] | undefined) => 
-        Array.isArray(items) 
-          ? items.filter(p => p?._id && p?.name).map(p => ({ ...p, id: p._id })) 
+
+      const validateProducts = (items: Product[] | undefined) =>
+        Array.isArray(items)
+          ? items.filter((p) => p?._id && p?.name).map((p) => ({ ...p, id: p._id }))
           : [];
-  
+
       const formattedProducts = {
         "Best Sellers": validateProducts(data.data.bestSellerProducts),
         "Trending": validateProducts(data.data.trendingProducts),
@@ -42,20 +43,24 @@ export function HomePage() {
         "Saree": validateProducts(data.data.sareeProducts),
         "Mobile": validateProducts(data.data.mobileProducts),
       };
-  
-      console.log("API Response Data:", data.data);
-      console.log("Formatted Products:", formattedProducts);
-      
+
       setProducts(formattedProducts);
+      localStorage.setItem("homeProducts", JSON.stringify(formattedProducts));
     } catch (error) {
-      console.error("Failed to fetch products:", error);
+      toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
-    getHomeProducts();
+    const storedProducts = localStorage.getItem("homeProducts");
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+      setLoading(false);
+    } else {
+      getHomeProducts();
+    }
   }, []);
 
   // Scroll function
@@ -83,19 +88,21 @@ export function HomePage() {
                   ref={(el) => (scrollContainerRefs.current[categoryIndex] = el)}
                   className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
                 >
-                  <Link to={"/product-details/:id"} className="grid grid-flow-col gap-4">
+                  <div className="grid grid-flow-col gap-4">
                     {loading ? (
                       <p className="text-center text-gray-500">Loading products...</p>
                     ) : categoryProducts.length > 0 ? (
-                      categoryProducts.map((product:any) =>
-                        product && product.id ? (
-                          <HomeProductCard key={product.id} product={product} />
+                      categoryProducts.map((product:Product) =>
+                        product && product._id ? (
+                          <Link to={`/product-details/${product._id}`}>
+                            <HomeProductCard key={product._id} product={product} />
+                          </Link>
                         ) : null
                       )
                     ) : (
                       <p className="text-center text-gray-500">No products available</p>
                     )}
-                  </Link>
+                  </div>
                 </div>
                 <Button
                   variant="outline"
@@ -121,101 +128,3 @@ export function HomePage() {
     </div>
   );
 }
-
- 
-
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import HomeProductCard from "@/components/HomeProductCard";
-// import { Skeleton } from "@/components/ui/skeleton";
-
-// interface Product {
-//   _id: string;
-//   name: string;
-//   images?: string[];
-//   price: number;
-//   discountPrice?: number;
-//   discountPercentage?: number;
-//   delivery: string | number;
-//   stock?: string;
-// }
-
-// export function HomePage() {
-//   const [products, setProducts] = useState<{
-//     trendingProducts: Product[];
-//     bestSellerProducts: Product[];
-//     shoesProducts: Product[];
-//     sareeProducts: Product[];
-//     mobileProducts: Product[];
-//   } | null>(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       try {
-//         const { data } = await axios.get(
-//           "http://localhost:8000/api/v1/products/home-products"
-//         );
-//         console.log("API Response:", data); // Debug API Response
-
-//         if (data.success) {
-//           setProducts(data.data);
-//         } else {
-//           console.error("Failed to fetch products");
-//         }
-//       } catch (error) {
-//         console.error("Error fetching products", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProducts();
-//   }, []);
-
-//   if (loading) {
-//     return (
-//       <div className="container mx-auto p-4">
-//         <h2 className="text-xl font-semibold mb-4">Loading Products...</h2>
-//         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-//           {Array.from({ length: 6 }).map((_, index) => (
-//             <Skeleton key={index} className="h-80 w-64 rounded-lg" />
-//           ))}
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   if (!products) {
-//     return (
-//       <div className="container mx-auto p-4">
-//         <h2 className="text-xl font-semibold text-red-500">
-//           No Products Available
-//         </h2>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="container mx-auto p-4">
-//       {/* Dynamic Category Display */}
-//       {Object.entries(products).map(([categoryKey, categoryProducts]) => (
-//         <div key={categoryKey} className="mb-10">
-//           <h2 className="text-xl font-semibold capitalize mb-4">
-//             {categoryKey.replace(/Products$/, "").replace(/([A-Z])/g, " $1")}
-//           </h2>
-//           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-//             {categoryProducts?.filter(Boolean).length > 0 ? (
-//               categoryProducts.map((product: any) => (
-//                 <HomeProductCard key={product._id} product={product} />
-//               ))
-//             ) : (
-//               <p className="text-gray-500">No products available.</p>
-//             )}
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-

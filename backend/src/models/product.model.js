@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema(
     sizes: { type: Array, required: true },
     images: { type: Array, required: true },
     bestSeller: { type: Boolean },
-    quantity: { type: Number, default: 1 },
+    quantity: { type: Number },
     delivery: { type: String },
     brand: { type: String },
     stock: { type: String },
@@ -35,11 +35,9 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
     },
-    // category: {
-    //   _id: mongoose.Schema.Types.ObjectId,
-    //   name: String,
-    //   slug: String,
-    // },
+    packet: { type: Number, default: 1 },
+    sellerName: { type: String },
+
   },
   { timestamps: true }
 );

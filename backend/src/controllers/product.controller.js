@@ -5,6 +5,7 @@ import { ApiResponse } from "../services/ApiResponse.js";
 import { uploadOnCloudinary } from "../services/cloudinary.js";
 import { User } from "../models/user.model.js";
 import { Category } from "../models/category.model.js";
+import mongoose from "mongoose";
 
 //--------------------Create Product--------------------
 const addProduct = asyncHandler(async (req, res) => {
@@ -25,6 +26,8 @@ const addProduct = asyncHandler(async (req, res) => {
     category,
     wishlist,
     stock,
+    packet,
+    sellerName,
   } = req.body;
 
   if (
@@ -89,6 +92,8 @@ const addProduct = asyncHandler(async (req, res) => {
     delivery,
     brand,
     stock,
+    packet: Number,
+    sellerName: req.user?.userName,
     bestSeller: bestSeller === "true",
     images: imageUploadResults.map((result) => result.url),
   });
@@ -459,6 +464,12 @@ const getSingleAndRelatedProducts = asyncHandler(async (req, res) => {
   if (!productId) {
     throw new ApiError(400, "Product ID is required");
   }
+  console.log("Received Product ID:", productId); // Debugging
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    console.error("Invalid product ID:", productId); // Debugging
+    throw new ApiError(400, "Invalid product ID");
+  }
 
   try {
     // Fetch the single product
@@ -495,6 +506,34 @@ const getSingleAndRelatedProducts = asyncHandler(async (req, res) => {
   }
 });
 
+//--------------------Get Similar Products ---------------
+const getSimilarProducts = asyncHandler(async (req, res) => {
+  const { pid: productId, cid: categoryId } = req.params;
+  
+  if (!productId) {
+    throw new ApiError(400, "Product ID is required");
+  }
+
+  const products = await Product.find({
+    category: categoryId,
+    _id: { $ne: productId },
+  })
+  .limit(8)
+  .populate("category")
+  .lean();
+  
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        totalSimilarProducts: products.length,
+        similarProducts: products,
+      },
+      "Similar products fetched successfully"
+    )
+  );
+
+});
 
 export {
   addProduct,
@@ -507,4 +546,5 @@ export {
   ratingProduct,
   addToWishlist,
   removeFromWishlist,
+  getSimilarProducts,
 };
