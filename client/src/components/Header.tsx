@@ -2,10 +2,12 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { useCart } from "@/context/cartContext"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const {cart} = useCart();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
@@ -45,16 +47,17 @@ export function Header() {
             <Search className="h-5 w-5" />
           </Button>
 
-          <NavLink to="/cart" className="text-gray-600 hover:text-primary">
-          <Button variant="ghost" size="icon" className="relative">
+          <Link to="/cart" className="text-gray-600 hover:text-primary">
+          <Button variant="ghost" size="icon" className="relative rounded-full">
             <ShoppingCart className="h-5 w-5" />
             <span className="absolute top-0 right-0 h-4 w-4 text-xs bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-              0
+              {cart?.length}
             </span>
-          </Button> 
-          </NavLink>
+          </Button>
+            Cart 
+          </Link>
           
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="relative rounded-full">
             <User className="h-5 w-5" />
           </Button>
         </div>

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Star, Heart, ChevronDown, ThumbsUp, Check  } from "lucide-react";
+import { Star, Heart, ChevronDown, ThumbsUp, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress"
+//import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useCart } from "@/context/cartContext";
 //import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface Product {
   _id: string;
@@ -35,7 +36,8 @@ const productt = {
       user: "John D.",
       rating: 5,
       date: "2024-02-20",
-      comment: "Excellent comfort and style. These shoes are perfect for daily wear.",
+      comment:
+        "Excellent comfort and style. These shoes are perfect for daily wear.",
       helpful: 24,
       verified: true,
     },
@@ -44,12 +46,23 @@ const productt = {
       user: "Sarah M.",
       rating: 4,
       date: "2024-02-15",
-      comment: "Great shoes but took some time to break in. Overall very satisfied with the purchase.",
+      comment:
+        "Great shoes but took some time to break in. Overall very satisfied with the purchase.",
       helpful: 12,
       verified: true,
     },
   ],
+};
+interface CartItem {
+  //_id: string;
+  images: string;
+  name: string;
+  description: string;
+  price: number;
+  discountPrice: number;
+  discountPercentage: number;
 }
+
 
 export function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -74,8 +87,9 @@ export function ProductDetails() {
   const [likedProducts, setLikedProducts] = useState<string[]>([]);
   const { id } = useParams();
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
-  const [activeSection, setActiveSection] = useState<string | null>(null)
-  const [helpfulReviews, setHelpfulReviews] = useState<number[]>([])
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [helpfulReviews, setHelpfulReviews] = useState<number[]>([]);
+  const { cart, setCart } = useCart();
 
   //-------Get single products-------
   const getSingleProduct = async () => {
@@ -133,12 +147,16 @@ export function ProductDetails() {
   };
 
   const toggleHelpful = (reviewId: number) => {
-    setHelpfulReviews((prev) => (prev.includes(reviewId) ? prev.filter((id) => id !== reviewId) : [...prev, reviewId]))
-  }
+    setHelpfulReviews((prev) =>
+      prev.includes(reviewId)
+        ? prev.filter((id) => id !== reviewId)
+        : [...prev, reviewId]
+    );
+  };
 
   const toggleSection = (section: string) => {
-    setActiveSection(activeSection === section ? null : section)
-  }
+    setActiveSection(activeSection === section ? null : section);
+  };
 
   // Calculate total reviews
   //const totalReviews:any = Object.values(productt.ratingDistribution).reduce((acc:any, curr:any) => acc + curr, 0)
@@ -288,17 +306,49 @@ export function ProductDetails() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button onClick={() => toast.success("Added to cart")}
+            {/* <Button onClick={() => {
+              setCart([...cart, product]); 
+              toast.success("Product added to cart")
+            }}
+              className="flex-1 text-base transition-transform active:scale-95"
+              variant="outline"
+            >
+              Add to Cart
+            </Button> */}
+
+            <Button
+              onClick={() => {
+                const cartItem: CartItem = {
+                 // _id: product._id,
+                  images: product.images[0],
+                  name: product.name,
+                  description: product.description,
+                  price: product.price,
+                  discountPrice: product.discountPrice,
+                  discountPercentage: product.discountPercentage,
+                };
+
+                const isAlreadyInCart = cart.some(
+                  (item) => item.name === product.name
+                );
+
+                if (isAlreadyInCart) {
+                  toast.error("Product is already in the cart");
+                } else {
+                  setCart([...cart, cartItem]);
+                  toast.success("Product added to cart");
+                }
+              }}
               className="flex-1 text-base transition-transform active:scale-95"
               variant="outline"
             >
               Add to Cart
             </Button>
+
             <Button className="flex-1 text-base transition-transform active:scale-95">
               Buy Now
             </Button>
           </div>
-
         </div>
       </div>
 
@@ -342,18 +392,15 @@ export function ProductDetails() {
           {activeSection === "specifications" && (
             <div className="border-t p-4">
               <dl className="space-y-4">
-                {Object.entries(product.specifications).map(
-                  ([key, ]) => (
-                    <div
-                      key={key}
-                      className="grid grid-cols-1 gap-2 sm:grid-cols-3"
-                    >
-                      <dt className="font-medium">{key}</dt>
-                      <dd className="text-muted-foreground sm:col-span-2">
-                      </dd>
-                    </div>
-                  )
-                )}
+                {Object.entries(product.specifications).map(([key]) => (
+                  <div
+                    key={key}
+                    className="grid grid-cols-1 gap-2 sm:grid-cols-3"
+                  >
+                    <dt className="font-medium">{key}</dt>
+                    <dd className="text-muted-foreground sm:col-span-2"></dd>
+                  </div>
+                ))}
               </dl>
             </div>
           )}
