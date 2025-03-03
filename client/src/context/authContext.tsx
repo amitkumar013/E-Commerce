@@ -23,14 +23,20 @@ const AuthProvider = ({ children }: UserProviderProps) => {
   useEffect(() => {
     const data = localStorage.getItem("auth");
     if (data) {
-      const parseData = JSON.parse(data);
-      setAuth({
-        user: parseData.data.user,
-        token: parseData.data.accessToken,
-      });   
+      try {
+        const parseData = JSON.parse(data);
+        setAuth({
+          user: parseData?.user || null,
+          token: parseData?.token || "",
+        });
+      } catch (error) {
+        console.error("Error parsing auth data:", error);
+        setAuth({ user: null, token: "" });
+      }
     }
-    
   }, []);
+  
+  
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

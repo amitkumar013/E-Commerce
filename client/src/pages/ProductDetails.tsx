@@ -28,6 +28,7 @@ interface Product {
   brand: string;
   totalReviews: number;
   specifications: string;
+  quantity: number;
 }
 const productt = {
   reviews: [
@@ -54,13 +55,14 @@ const productt = {
   ],
 };
 interface CartItem {
-  //_id: string;
+  _id: string;
   images: string;
   name: string;
   description: string;
   price: number;
   discountPrice: number;
   discountPercentage: number;
+  quantity: number;
 }
 
 
@@ -70,6 +72,7 @@ export function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<any>(null);
   const [liked, setLiked] = useState(false);
   const [product, setProduct] = useState({
+    _id: "",
     images: [],
     colors: [],
     sizes: [],
@@ -83,6 +86,7 @@ export function ProductDetails() {
     sellerName: "",
     description: "",
     specifications: {},
+    quantity: 0,
   });
   const [likedProducts, setLikedProducts] = useState<string[]>([]);
   const { id } = useParams();
@@ -306,26 +310,17 @@ export function ProductDetails() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">
-            {/* <Button onClick={() => {
-              setCart([...cart, product]); 
-              toast.success("Product added to cart")
-            }}
-              className="flex-1 text-base transition-transform active:scale-95"
-              variant="outline"
-            >
-              Add to Cart
-            </Button> */}
-
             <Button
               onClick={() => {
                 const cartItem: CartItem = {
-                 // _id: product._id,
+                  _id: product._id,
                   images: product.images[0],
                   name: product.name,
                   description: product.description,
                   price: product.price,
                   discountPrice: product.discountPrice,
                   discountPercentage: product.discountPercentage,
+                  quantity: product.quantity || 1,
                 };
 
                 const isAlreadyInCart = cart.some(
@@ -336,6 +331,7 @@ export function ProductDetails() {
                   toast.error("Product is already in the cart");
                 } else {
                   setCart([...cart, cartItem]);
+                  localStorage.setItem("cart", JSON.stringify([...cart, cartItem]));
                   toast.success("Product added to cart");
                 }
               }}

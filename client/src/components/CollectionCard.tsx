@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Star } from 'lucide-react';
  
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   image: string;
   rating: number;
