@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -17,12 +17,10 @@ export function Header() {
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* Logo - Next to the toggle button */}
         <Link to="/" className="text-2xl font-bold text-primary mr-auto">
           EShop
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6 ml-6">
           <Link to="/products" className="text-gray-600 hover:text-primary">
             Products
@@ -35,7 +33,6 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Search Bar */}
         <div className="hidden md:flex items-center space-x-2 flex-1 max-w-md mx-6">
           <Input type="text" placeholder="Search products..." className="w-full" />
           <Button size="icon">
@@ -43,17 +40,20 @@ export function Header() {
           </Button>
         </div>
 
-        {/* User, Cart, and Search Icons - Visible on all screen sizes */}
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
+
+          <NavLink to="/cart" className="text-gray-600 hover:text-primary">
           <Button variant="ghost" size="icon" className="relative">
             <ShoppingCart className="h-5 w-5" />
             <span className="absolute top-0 right-0 h-4 w-4 text-xs bg-primary text-primary-foreground rounded-full flex items-center justify-center">
               0
             </span>
-          </Button>
+          </Button> 
+          </NavLink>
+          
           <Button variant="ghost" size="icon">
             <User className="h-5 w-5" />
           </Button>
