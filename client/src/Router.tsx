@@ -7,6 +7,8 @@ import CollectionPage from "@/pages/CollectionPage";
 import { HomePage } from "./pages/HomePage";
 import { ProductDetails } from "./pages/ProductDetails";
 import { CartPage } from "./pages/CartPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { PageNotFound } from "./pages/PageNotFound";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
           {
             path: "cart",
             element: <CartPage />
+          },
+          {
+            path: "profile",
+            element: <ProfilePage />
+          },
+          {
+            path: "*",
+            element: <PageNotFound />
           }
         ]
     },
