@@ -107,11 +107,11 @@ export function CartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white mt-12">
       <div className="container mx-auto px-4 py-8">
-        <h4 className={`text-center text-lg md:text-xl font-semibold p-3 
-          ${ auth?.token? "text-green-600": "text-red-600 bg-red-100 rounded-lg" }`}
+        <div className={`text-center text-lg md:text-xl font-semibold p-3 
+          ${ auth?.token? "text-green-600 bg-green-100": "text-red-600 bg-red-100 rounded-lg" }`}
         >
-          {auth?.token? `Hello, ${auth.user?.userName} 👋`: "🔒 Please login to checkout"}
-        </h4>
+          {auth?.token? `Hello, ${auth.user?.userName} ✅`: "🔒 Please login to checkout"}
+        </div>
 
         {/* Login Popup */}
         {showLoginPopup && (
@@ -318,12 +318,14 @@ export function CartPage() {
                             {formatPrice(discountedTotal)}
                           </span>
                         </div>
-                        <Button
-                          size="lg"
-                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-transform hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                          Proceed to Checkout
-                        </Button>
+                        <Link to="/place-order">
+                          <Button
+                            size="lg"
+                            className="w-full bg-gradient-to-r mt-8 from-blue-600 to-indigo-600 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                          >
+                            Proceed to Checkout
+                          </Button>
+                        </Link>
                         <p className="text-center text-sm text-muted-foreground">
                           Free shipping on all orders
                         </p>

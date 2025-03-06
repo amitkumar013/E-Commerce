@@ -65,7 +65,6 @@ interface CartItem {
   quantity: number;
 }
 
-
 export function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -331,19 +330,26 @@ export function ProductDetails() {
                   toast.error("Product is already in the cart");
                 } else {
                   setCart([...cart, cartItem]);
-                  localStorage.setItem("cart", JSON.stringify([...cart, cartItem]));
+                  localStorage.setItem(
+                    "cart",
+                    JSON.stringify([...cart, cartItem])
+                  );
                   toast.success("Product added to cart");
                 }
               }}
-              className="flex-1 text-base transition-transform active:scale-95"
+              className="flex-1 w-full h-12 text-base transition-transform active:scale-95"
               variant="outline"
             >
               Add to Cart
             </Button>
+          </div>
 
-            <Button className="flex-1 text-base transition-transform active:scale-95">
-              Buy Now
-            </Button>
+          <div className="w-full">
+              <Link to="/place-order">
+                <Button className="flex-1 w-full h-12 text-base transition-transform active:scale-95">
+                  Buy Now
+                </Button>
+              </Link>
           </div>
         </div>
       </div>

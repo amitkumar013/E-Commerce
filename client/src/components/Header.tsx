@@ -76,7 +76,7 @@ export function Header() {
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
-
+          
           {/* User Dropdown */}
           <div className="relative">
             <Button

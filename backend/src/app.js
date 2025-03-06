@@ -36,6 +36,7 @@ import userRouter from './routes/user.route.js';
 import productRouter from './routes/product.route.js';
 import categoryRouter from './routes/category.route.js'
 import adminRouter from "./routes/adminProduct.route.js"
+import orderRouter from "./routes/order.route.js";
 
 
 // http://localhost:8000/api/v1/users/register
@@ -43,7 +44,7 @@ import adminRouter from "./routes/adminProduct.route.js"
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/categorys", categoryRouter);
-app.use("/api/v1/admin-products", adminRouter)
-
+app.use("/api/v1/admin-products", adminRouter);
+app.use("/api/v1/orders", orderRouter);
 
 export default app;

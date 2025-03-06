@@ -26,7 +26,6 @@ const addProduct = asyncHandler(async (req, res) => {
     category,
     wishlist,
     stock,
-    packet,
     sellerName,
   } = req.body;
 
@@ -92,7 +91,6 @@ const addProduct = asyncHandler(async (req, res) => {
     delivery,
     brand,
     stock,
-    packet: Number,
     sellerName: req.user?.userName,
     bestSeller: bestSeller === "true",
     images: imageUploadResults.map((result) => result.url),

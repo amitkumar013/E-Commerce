@@ -8,7 +8,7 @@ const categorySchema = new mongoose.Schema(
     },
     categoryType: {
       type: String,
-      required: true
+      required: true,
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,

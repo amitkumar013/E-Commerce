@@ -9,6 +9,7 @@ import { ProductDetails } from "./pages/ProductDetails";
 import { CartPage } from "./pages/CartPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PageNotFound } from "./pages/PageNotFound";
+import PlaceOrder from "./pages/PlaceOrder";
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <ProfilePage />
+          },
+          {
+            path: "place-order",
+            element: <PlaceOrder />
           },
           {
             path: "*",
