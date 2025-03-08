@@ -10,6 +10,7 @@ import { CartPage } from "./pages/CartPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PageNotFound } from "./pages/PageNotFound";
 import PlaceOrder from "./pages/PlaceOrder";
+//import Payment from "./pages/PaymentPage";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
             path: "place-order",
             element: <PlaceOrder />
           },
+          // {
+          //   path: "payment",
+          //   element: <Payment />
+          // },
           {
             path: "*",
             element: <PageNotFound />
@@ -58,7 +63,7 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: <RegisterPage />,
-          }
+          },
            
         ],
       },
