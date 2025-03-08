@@ -4,14 +4,7 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-
-// app.use(cors({
-//     origin: process.env.CORS_ORIGIN,
-//     credentials: true
-// }))
-
 const allowedOrigins = process.env.CORS_ORIGIN.split(",");
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -37,6 +30,7 @@ import productRouter from './routes/product.route.js';
 import categoryRouter from './routes/category.route.js'
 import adminRouter from "./routes/adminProduct.route.js"
 import orderRouter from "./routes/order.route.js";
+import paymentRouter from "./routes/payment.route.js";
 
 
 // http://localhost:8000/api/v1/users/register
@@ -46,5 +40,6 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/categorys", categoryRouter);
 app.use("/api/v1/admin-products", adminRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/payments", paymentRouter);
 
 export default app;
