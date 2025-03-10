@@ -144,7 +144,7 @@ export default function Filters({
         </ul>
       </div>
 
-      <button onClick={resetFilters} className="mt-4 w-full bg-red-400 text-white p-2 rounded-md">
+      <button onClick={resetFilters} className="mt-4 w-full bg-red-600 text-white p-2 rounded-sm">
         Reset Filters
       </button>
     </aside>

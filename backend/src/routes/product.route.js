@@ -26,7 +26,7 @@ router.route("/add").post(verifyJWT,
     ]),
     addProduct
 )
-router.route("/").get(getAllProducts);
+router.route("/all-products").get(getAllProducts);
 router.route("/home-products").get(getHomeProducts)
 router.route("/related-products/:id").get(getSingleAndRelatedProducts)
 router.route("/similar-products/:pid/:cid").get(getSimilarProducts)

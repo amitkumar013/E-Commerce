@@ -7,10 +7,9 @@ import CollectionPage from "@/pages/CollectionPage";
 import { HomePage } from "./pages/HomePage";
 import { ProductDetails } from "./pages/ProductDetails";
 import { CartPage } from "./pages/CartPage";
-import { ProfilePage } from "./pages/ProfilePage";
 import { PageNotFound } from "./pages/PageNotFound";
 import PlaceOrder from "./pages/PlaceOrder";
-//import Payment from "./pages/PaymentPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([
     {

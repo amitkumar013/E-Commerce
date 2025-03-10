@@ -40,7 +40,7 @@ export function Footer() {
                 <h3 className="text-sm font-semibold text-foreground tracking-wider uppercase">Shop</h3>
                 <ul className="mt-4 space-y-4">
                   <li>
-                    <Link to="/products" className="text-base text-muted-foreground hover:text-foreground">
+                    <Link to="/collection" className="text-base text-muted-foreground hover:text-foreground">
                       All Products
                     </Link>
                   </li>

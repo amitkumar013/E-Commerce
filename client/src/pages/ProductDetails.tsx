@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Star, Heart, ChevronDown, ThumbsUp, Check } from "lucide-react";
+import { Star, Heart, ChevronDown, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -161,7 +161,7 @@ export function ProductDetails() {
     setActiveSection(activeSection === section ? null : section);
   };
 
-  // Calculate total reviews
+  //Calculate total reviews
   //const totalReviews:any = Object.values(productt.ratingDistribution).reduce((acc:any, curr:any) => acc + curr, 0)
 
   return (
@@ -425,6 +425,7 @@ export function ProductDetails() {
           {activeSection === "reviews" && (
             <div className="border-t p-4">
               <div className="grid gap-8 md:grid-cols-12">
+
                 {/* Rating Summary */}
                 {/* <div className="md:col-span-4">
                   <div className="text-center">

@@ -47,14 +47,8 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6 ml-6">
-          <Link to="/products" className="text-gray-600 hover:text-primary">
-            Products
-          </Link>
-          <Link to="/categories" className="text-gray-600 hover:text-primary">
-            Categories
-          </Link>
-          <Link to="/deals" className="text-gray-600 hover:text-primary">
-            Deals
+          <Link to="/collection" className="text-gray-600 hover:text-primary">
+           All Categories
           </Link>
         </nav>
 

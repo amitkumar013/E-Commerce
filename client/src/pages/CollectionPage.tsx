@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/CollectionCard";
 import axios from "axios";
-import { AutoCarousel } from "@/components/AutoCarousel";
 import Filters from "@/components/Filters";
 import { Link } from "react-router-dom";
 
@@ -35,18 +34,16 @@ export default function CollectionPage() {
     max: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   // Fetch all products
   const getAllProducts = async () => {
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
-      const { data } = await axios.get(`${URI}/products/`);
-      const productsData = data.products;
-      if (!productsData) throw new Error("Products data is undefined");
+      const { data } = await axios.get(`${URI}/products/all-products`);
 
-      const mappedProducts = productsData.map((product: any) => ({
-        id: product._id,
+      const mappedProducts = data.products.map((product: any) => ({
+        _id: product._id,
         name: product.name,
         description: product.description,
         image: product.images[0],
@@ -69,7 +66,6 @@ export default function CollectionPage() {
     getAllProducts();
   }, []);
 
-  // Apply filters
   useEffect(() => {
     let filtered = products;
 
@@ -96,7 +92,6 @@ export default function CollectionPage() {
     setFilteredProducts(filtered);
   }, [selectedCategories, selectedBrands, selectedPrice, products]);
 
-  // Toggle category selection
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -105,14 +100,12 @@ export default function CollectionPage() {
     );
   };
 
-  // Toggle brand selection
   const handleBrandChange = (brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
   };
 
-  // Reset Filters
   const resetFilters = () => {
     setSelectedCategories([]);
     setSelectedBrands([]);
@@ -120,8 +113,7 @@ export default function CollectionPage() {
   };
 
   return (
-    <div className="mt-16 max-w-7xl mx-auto px-4">
-       
+    <div className="mt-24 max-w-7xl mx-auto px-4">
       <div className="flex flex-col md:flex-row gap-6 mt-5">
         <Filters
           categories={categories}
@@ -138,32 +130,19 @@ export default function CollectionPage() {
 
         <section className="w-full md:w-3/4">
           <h1 className="text-2xl font-bold mb-5 text-center">All Products</h1>
-          {/* <Link to={`/product-details/${product._id}`}>
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
-                  <ProductCard key={product._id} product={product} />
-                ))
-              ) : (
-                <p className="text-gray-500">No products found.</p>
-              )}
-            </div>
-          </Link> */}
-
-
           {loading ? (
-            <p className="text-center text-gray-500">Loading products...</p>
-          ) : filteredProducts.length > 0 ? (
-            filteredProducts.map((product: Product) =>
-              product && product._id ? (
-                <Link to={`/product-details/${product._id}`}>
-                  <ProductCard key={product._id} product={product} />
-                </Link>
-              ) : null
-            )
-          ) : (
-            <p className="text-center text-gray-500">No products available</p>
-          )}
+          <p className="text-center text-gray-500">Loading products...</p>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {filteredProducts.map((product: Product) => (
+              <Link key={product._id} to={`/product-details/${product._id}`}>
+                <ProductCard product={product} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No products available</p>
+        )}
         </section>
       </div>
     </div>
