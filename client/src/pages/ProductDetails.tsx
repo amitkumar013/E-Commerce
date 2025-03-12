@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
-import { Star, Heart, ChevronDown, ThumbsUp } from "lucide-react";
+import { Star, Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-//import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCart } from "@/context/cartContext";
-//import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface Product {
   _id: string;
   name: string;
   description: string;
   images: string;
-  rating: number;
+  ratings: Rating[];
   price: number;
   discountPrice: number;
   discountPercentage: number;
@@ -26,34 +24,16 @@ interface Product {
   category: string;
   sellerName: string;
   brand: string;
-  totalReviews: number;
-  specifications: string;
+  specifications: { [key: string]: string };
   quantity: number;
 }
-const productt = {
-  reviews: [
-    {
-      id: 1,
-      user: "John D.",
-      rating: 5,
-      date: "2024-02-20",
-      comment:
-        "Excellent comfort and style. These shoes are perfect for daily wear.",
-      helpful: 24,
-      verified: true,
-    },
-    {
-      id: 2,
-      user: "Sarah M.",
-      rating: 4,
-      date: "2024-02-15",
-      comment:
-        "Great shoes but took some time to break in. Overall very satisfied with the purchase.",
-      helpful: 12,
-      verified: true,
-    },
-  ],
-};
+interface Rating {
+  userId: string;
+  rating: number;
+  comment: string;
+  userName: string;
+  date: string;
+}
 interface CartItem {
   _id: string;
   images: string;
@@ -77,7 +57,7 @@ export function ProductDetails() {
     sizes: [],
     brand: "",
     name: "",
-    rating: 0,
+    ratings: [],
     totalReviews: 0,
     price: 0,
     discountPrice: 0,
@@ -91,7 +71,6 @@ export function ProductDetails() {
   const { id } = useParams();
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [helpfulReviews, setHelpfulReviews] = useState<number[]>([]);
   const { cart, setCart } = useCart();
 
   //-------Get single products-------
@@ -149,20 +128,17 @@ export function ProductDetails() {
     );
   };
 
-  const toggleHelpful = (reviewId: number) => {
-    setHelpfulReviews((prev) =>
-      prev.includes(reviewId)
-        ? prev.filter((id) => id !== reviewId)
-        : [...prev, reviewId]
-    );
-  };
-
   const toggleSection = (section: string) => {
     setActiveSection(activeSection === section ? null : section);
   };
 
-  //Calculate total reviews
-  //const totalReviews:any = Object.values(productt.ratingDistribution).reduce((acc:any, curr:any) => acc + curr, 0)
+  const averageRating =
+    product.ratings.length > 0
+      ? product.ratings.reduce(
+          (acc: number, curr: Rating) => acc + (curr.rating || 0),
+          0
+        ) / product.ratings.length
+      : 0;
 
   return (
     <div className="container mx-auto px-4 py-24">
@@ -218,23 +194,19 @@ export function ProductDetails() {
             <h1 className="text-3xl font-bold tracking-tight">
               {product.name}
             </h1>
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={cn(
-                      "h-5 w-5 transition-colors duration-200",
-                      i < Math.floor(product.rating)
-                        ? "fill-primary text-primary"
-                        : "fill-muted text-muted-foreground"
-                    )}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                ({product.totalReviews} reviews)
-              </span>
+
+            <div className="flex">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={cn(
+                    "h-5 w-5 transition-colors duration-200",
+                    i < Math.round(averageRating)
+                      ? "fill-primary text-primary"
+                      : "fill-muted text-muted-foreground"
+                  )}
+                />
+              ))}
             </div>
           </div>
 
@@ -345,11 +317,11 @@ export function ProductDetails() {
           </div>
 
           <div className="w-full">
-              <Link to="/place-order">
-                <Button className="flex-1 w-full h-12 text-base transition-transform active:scale-95">
-                  Buy Now
-                </Button>
-              </Link>
+            <Link to="/place-order">
+              <Button className="flex-1 w-full h-12 text-base transition-transform active:scale-95">
+                Buy Now
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -393,138 +365,73 @@ export function ProductDetails() {
           </button>
           {activeSection === "specifications" && (
             <div className="border-t p-4">
-              <dl className="space-y-4">
-                {Object.entries(product.specifications).map(([key]) => (
-                  <div
-                    key={key}
-                    className="grid grid-cols-1 gap-2 sm:grid-cols-3"
-                  >
-                    <dt className="font-medium">{key}</dt>
-                    <dd className="text-muted-foreground sm:col-span-2"></dd>
-                  </div>
-                ))}
-              </dl>
+              {product.specifications &&
+              Object.keys(product.specifications).length > 0 ? (
+                <dl className="space-y-4">
+                  {Object.entries(product.specifications).map(
+                    ([key, value]) => (
+                      <div
+                        key={key}
+                        className="grid grid-cols-1 gap-2 sm:grid-cols-3"
+                      >
+                        <dt className="font-medium">{key}</dt>
+                        <dd className="text-muted-foreground sm:col-span-2">
+                          {String(value)}
+                        </dd>
+                      </div>
+                    )
+                  )}
+                </dl>
+              ) : (
+                <p className="text-muted-foreground text-center">
+                  No data available
+                </p>
+              )}
             </div>
           )}
         </div>
 
         {/* Ratings & Reviews */}
-        <div className="rounded-lg border">
-          <button
-            className="flex w-full items-center justify-between p-4 text-left"
-            onClick={() => toggleSection("reviews")}
-          >
-            <h3 className="text-lg font-semibold">Ratings & Reviews</h3>
-            <ChevronDown
-              className={cn(
-                "h-5 w-5 transition-transform duration-200",
-                activeSection === "reviews" && "rotate-180"
-              )}
-            />
-          </button>
-          {activeSection === "reviews" && (
-            <div className="border-t p-4">
-              <div className="grid gap-8 md:grid-cols-12">
-
-                {/* Rating Summary */}
-                {/* <div className="md:col-span-4">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-primary">
-                      {product.rating}
+        <div className="space-y-4 md:col-span-8">
+          {Array.isArray(product.ratings) && product.ratings.length > 0 ? (
+            product.ratings.map((review: Rating, index: number) => (
+              <div key={index} className="space-y-2 rounded-lg border p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        {review?.userName ?? "Anonymous"}
+                      </span>
                     </div>
-                    <div className="mt-2 flex justify-center">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={cn(
-                            "h-5 w-5",
-                            i < Math.floor(product.rating)
-                              ? "fill-primary text-primary"
-                              : "fill-muted text-muted-foreground"
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Based on {totalReviews} reviews
-                    </p>
-                  </div>
-                  <div className="mt-6 space-y-2">
-                    {Object.entries(productt.ratingDistribution)
-                      .sort(([a], [b]) => Number(b) - Number(a))
-                      .map(([rating, count]) => (
-                        <div key={rating} className="flex items-center gap-2">
-                          <span className="w-6 text-sm">{rating}★</span>
-                          <Progress
-                            value={(count / totalReviews) * 100}
-                            className="h-2"
-                          />
-                          <span className="w-8 text-sm text-muted-foreground">
-                            {count}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div> */}
-
-                {/* Reviews List */}
-                <div className="space-y-4 md:col-span-8">
-                  {productt.reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="space-y-2 rounded-lg border p-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{review.user}</span>
-                            {review.verified && (
-                              <Badge variant="secondary" className="text-xs">
-                                Verified Purchase
-                              </Badge>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={cn(
+                              "h-4 w-4",
+                              i < (review?.rating ?? 0)
+                                ? "fill-primary text-primary"
+                                : "fill-muted text-muted-foreground"
                             )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={cn(
-                                    "h-4 w-4",
-                                    i < review.rating
-                                      ? "fill-primary text-primary"
-                                      : "fill-muted text-muted-foreground"
-                                  )}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(review.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "gap-2",
-                            helpfulReviews.includes(review.id) && "text-primary"
-                          )}
-                          onClick={() => toggleHelpful(review.id)}
-                        >
-                          <ThumbsUp className="h-4 w-4" />
-                          <span>
-                            {review.helpful +
-                              (helpfulReviews.includes(review.id) ? 1 : 0)}
-                          </span>
-                        </Button>
+                          />
+                        ))}
                       </div>
-                      <p className="text-muted-foreground">{review.comment}</p>
+                      <span className="text-sm text-muted-foreground">
+                        {review?.date
+                          ? new Date(review.date).toLocaleDateString()
+                          : "No date available"}
+                      </span>
                     </div>
-                  ))}
+                  </div>
                 </div>
+                <p className="text-muted-foreground">
+                  {review?.comment ?? "No comment provided."}
+                </p>
               </div>
-            </div>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No reviews yet.</p>
           )}
         </div>
       </div>

@@ -9,8 +9,9 @@ interface Product {
   name: string;
   description: string;
   image: string;
-  rating: number;
   price: number;
+  discountPrice?: number;
+  discountPercentage?: number;
   category: string;
   brand: string;
 }

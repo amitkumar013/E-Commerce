@@ -234,7 +234,7 @@ const removeFromCart = asyncHandler(async (req, res) => {
 
 //--------------------Rating Product---------------------
 const ratingProduct = asyncHandler(async (req, res) => {
-  const { rating } = req.body;
+  const { rating, comment } = req.body;
   const productId = req.params.id;
   const userId = req.user?.id;
 
@@ -251,6 +251,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
   }
 
   try {
+    const user = await User.findById(userId).select("userName");
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
     const product = await Product.findById(productId);
     if (!product) {
       throw new ApiError(404, "Product not found");
@@ -262,24 +267,25 @@ const ratingProduct = asyncHandler(async (req, res) => {
     );
 
     if (existingRatingIndex !== -1) {
-      // Update existing rating
       product.ratings[existingRatingIndex].rating = rating;
+      product.ratings[existingRatingIndex].comment = comment;
+      product.ratings[existingRatingIndex].userName = user.userName;
+      product.ratings[existingRatingIndex].date = new Date();
     } else {
-      // Add new rating
-      product.ratings.push({ userId, rating });
+      product.ratings.push({ 
+        userId, 
+        rating,
+        comment,
+        userName: user.userName,
+        date: new Date(), 
+      });
     }
-
-    // Recalculate average rating
-    const totalRatings = product.ratings.length;
-    const sumRatings = product.ratings.reduce((sum, r) => sum + r.rating, 0);
-    const avgRating = sumRatings / totalRatings;
-
     await product.save();
 
     return res.json(
       new ApiResponse(
         200,
-        { product, avgRating },
+        { product },
         "Product rating updated successfully"
       )
     );

@@ -23,6 +23,9 @@ const productSchema = new mongoose.Schema(
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         rating: { type: Number, min: 1, max: 5 },
+        comment: { type: String },
+        userName: { type: String },
+        date: { type: Date, default: Date.now },
       },
     ],
     colors: [
