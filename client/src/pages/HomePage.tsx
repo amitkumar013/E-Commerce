@@ -28,7 +28,7 @@ export function HomePage() {
   const getHomeProducts = async () => {
     const URI = import.meta.env.VITE_BACKEND_URL;
     try {
-      const { data } = await axios.get(`${URI}/products/home-products`);
+      const { data } = await axios.get(`${URI}/api/v1/products/home-products`);
       if (!data?.data) throw new Error("Invalid product data");
 
       const validateProducts = (items: Product[] | undefined) =>
