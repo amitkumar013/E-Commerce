@@ -72,20 +72,17 @@ export function ProductDetails() {
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const { cart, setCart } = useCart();
+  const URI = import.meta.env.VITE_BACKEND_URL;
 
   //-------Get single products-------
   const getSingleProduct = async () => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/v1/products/${id}`
-      );
-      //console.log("Sizes:", product.sizes);
+      const { data } = await axios.get(`${URI}/api/v1/products/single-product/${id}`);
 
       if (!data || !data.data) {
         throw new Error("Product data is undefined");
       }
       setProduct(data?.data);
-      //getSimilarProducts(data?.product._id, data?.product.categoryId._id);
       getSimilarProducts(data.data._id, data.data.category);
     } catch (error) {
       console.error("Failed to fetch products...");
@@ -108,10 +105,7 @@ export function ProductDetails() {
   //------Get similar products------
   const getSimilarProducts = async (pid: string, cid: string) => {
     try {
-      const URI = import.meta.env.VITE_BACKEND_URL;
-      const { data } = await axios.get(
-        `${URI}/products/similar-products/${pid}/${cid}`
-      );
+      const { data } = await axios.get(`${URI}/api/v1/products/similar-products/${pid}/${cid}`);
 
       setSimilarProducts(data.data.similarProducts);
     } catch (error) {

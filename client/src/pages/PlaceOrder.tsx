@@ -201,7 +201,7 @@ export default function PlaceOrder() {
         paymentMethod: "COD",
       };
 
-      await axios.post(`${URI}/orders/cod-checkout`, orderData, {
+      await axios.post(`${URI}/api/v1/orders/cod-checkout`, orderData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${auth?.token}`,
@@ -234,7 +234,7 @@ export default function PlaceOrder() {
       };
 
       const { data } = await axios.post(
-        `${URI}/payments/razorpay-checkout`,
+        `${URI}/api/v1/payments/razorpay-checkout`,
         orderData,
         {
           headers: {
@@ -270,7 +270,7 @@ export default function PlaceOrder() {
             };
 
             const verifyResponse = await axios.post(
-              `${URI}/payments/verify-payment`,
+              `${URI}/api/v1/payments/verify-payment`,
               paymentData,
               {
                 headers: {

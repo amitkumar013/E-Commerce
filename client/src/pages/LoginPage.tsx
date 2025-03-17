@@ -28,7 +28,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
-      const res = await axios.post(`${URI}/users/login`, {
+      const res = await axios.post(`${URI}/api/v1/users/login`, {
         email,
         password,
       });

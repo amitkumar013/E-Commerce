@@ -41,7 +41,7 @@ export default function CollectionPage() {
   const getAllProducts = async () => {
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
-      const { data } = await axios.get(`${URI}/products/all-products`);
+      const { data } = await axios.get(`${URI}/api/v1/products/all-products`);
 
       const mappedProducts = data.products.map((product: any) => ({
         _id: product._id,

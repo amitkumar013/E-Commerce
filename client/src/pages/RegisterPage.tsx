@@ -29,7 +29,7 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
-      const res = await axios.post(`${URI}/users/register`, {
+      const res = await axios.post(`${URI}/api/v1/users/register`, {
         name,
         email,
         password,

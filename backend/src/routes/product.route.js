@@ -31,7 +31,7 @@ router.route("/home-products").get(getHomeProducts)
 router.route("/related-products/:id").get(getSingleAndRelatedProducts)
 router.route("/similar-products/:pid/:cid").get(getSimilarProducts)
 
-router.route("/:id").get(getProductById);
+router.route("/single-product/:id").get(getProductById);
 router.route("/add-cart/:id").patch(verifyJWT, addToCart)
 router.route("/remove-cart/:id").delete(verifyJWT, removeFromCart)
 router.route("/rating/:id").patch(verifyJWT, ratingProduct)
