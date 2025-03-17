@@ -20,8 +20,8 @@ interface ProductCardProps {
 
 const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
   return (
-    <Card className="group overflow-hidden transition-transform duration-300 hover:-translate-y-3 hover:shadow-lg rounded-lg w-64">
-      <div className="relative h-[250px] w-full">
+    <Card className="group overflow-hidden transition-transform duration-300 hover:-translate-y-3 hover:shadow-lg rounded-lg w-full md:w-52 lg:w-64 max-w-[300px]">
+      <div className="relative h-[130px] md:h-[250px] w-full">
         <img
           src={
             Array.isArray(product.images) && product.images.length > 0
@@ -29,8 +29,8 @@ const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
               : "/placeholder.svg"
           }
           alt={product.name}
-          className="h-full w-full object-cover rounded-t-lg"
-        />
+          className="h-[135px] md:h-[210px] lg:h-[230px] w-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+        /> 
 
         <Button
           variant="ghost"
@@ -41,7 +41,7 @@ const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
         </Button>
       </div>
       <CardContent className="p-4">
-        <h2 className="font-semibold text-lg">{product.name}</h2>
+        <h2 className="font-semibold text-lg col-span-1">{product.name}</h2>
         <div className="mt-1 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="font-bold text-lg text-gray-900">
@@ -56,7 +56,7 @@ const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between text-sm text-gray-600">
+        <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
           <p className="font-medium">{product.delivery}</p>
           <span
             className={`px-2 py-1 rounded-2xl font-semibold
