@@ -47,6 +47,6 @@ app.use("/api/v1/categorys", categoryRouter);
 app.use("/api/v1/admin-products", adminRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/payments", paymentRouter);
-app.use("/api/v1", healthCheckRouter);
+app.use("/", healthCheckRouter);
 
 export default app;
