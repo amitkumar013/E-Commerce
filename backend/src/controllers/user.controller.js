@@ -19,7 +19,7 @@ const createToken = (id) => {
 
 //--------------------Register User--------------------
 const registerUser = asyncHandler(async (req, res) => {
-    const { userName, email, password, role } = req.body;
+    const { userName, email, password, phone, role } = req.body;
   
     if (!userName) { 
       throw new ApiError(400, "Username is required");
@@ -30,6 +30,9 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!password) {
       throw new ApiError(400, "Password is required");
     }
+    if (!phone) {
+      throw new ApiError(400, "Phone number is required");
+    }
   
     const existedUser = await User.findOne({ email })
   
@@ -39,9 +42,10 @@ const registerUser = asyncHandler(async (req, res) => {
   
     try {
       const user = await User.create({
-        userName: userName.toLowerCase(),
+        userName,
         email,
         password,
+        phone,
         role: role || "user",
       });
     

@@ -17,11 +17,13 @@ import { useAuth } from "@/context/authContext";
 import toast from "react-hot-toast";
 
 export default function RegisterPage() {
-    const [name, setName] = useState("");
+    const [userName, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [phone, setPhone] = useState("");
     const [error] = useState("");
     const { auth, setAuth } = useAuth();
+    const [role, setRole] = useState("user");
 
     const navigate = useNavigate();
 
@@ -30,9 +32,11 @@ export default function RegisterPage() {
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
       const res = await axios.post(`${URI}/api/v1/users/register`, {
-        name,
+        userName,
         email,
         password,
+        phone,
+        role,
       });
       if (res && res.data.success) {
         setAuth({
@@ -41,7 +45,12 @@ export default function RegisterPage() {
           token: res.data.accessToken,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
-        navigate("/");
+        toast.success(res.data.message)
+        navigate("/auth/login");
+        setName("");
+        setEmail("");
+        setPassword("");
+        setRole("user");
       } else {
         toast.error("Registration failed");
       }
@@ -65,7 +74,7 @@ export default function RegisterPage() {
                 <Input
                   id="name"
                   placeholder="John Doe"
-                  value={name}
+                  value={userName}
                   onChange={(e) => setName(e.target.value)}
                   required
                   autoComplete="name"
@@ -93,6 +102,19 @@ export default function RegisterPage() {
                   type="password"
                   value={password}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Phone No</Label>
+                <Input
+                  id="phone"
+                  placeholder="Enter phone number"
+                  type="tel"
+                  value={phone}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
                   required
                   autoComplete="current-password"
                 />

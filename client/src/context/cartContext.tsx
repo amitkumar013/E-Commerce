@@ -13,6 +13,7 @@ interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  clearCart: () => void;
 }
 
 type CartProviderProps = {
@@ -31,8 +32,13 @@ const CartProvider = ({ children }: CartProviderProps) => {
     }
   }, []);
 
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+  };
+
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
+    <CartContext.Provider value={{ cart, setCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

@@ -105,12 +105,12 @@ export function Header() {
                   </li>
                   <li>
                     <Link
-                      to="/orders"
+                      to="/my-order"
                       className="flex items-center px-4 py-2 hover:bg-gray-100 w-full"
                       onClick={() => setIsDropdownOpen(false)}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2 text-blue-500" />{" "}
-                      Orders
+                      My Order
                     </Link>
                   </li>
                   <li>

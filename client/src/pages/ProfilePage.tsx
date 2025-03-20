@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   AtSign,
@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/context/authContext";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -32,22 +33,19 @@ export default function ProfilePage() {
   const [showPassword, setShowPassword] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Form state
-  const [formData, setFormData] = useState({
-    name: "Rahul Sharma",
-    email: "rahul.sharma@example.com",
-    phone: "9876543210",
-    password: "••••••••••",
-    actualPassword: "securepassword123",
-  });
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const { auth, setAuth } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  //-----Get User Data-----
+  useEffect(() => {
+    const { userName, email, password } = auth?.user;
+    setUserName(userName);
+    setEmail(email);
+    setPassword(password);
+  }, [auth?.user]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +92,6 @@ export default function ProfilePage() {
         className="mb-8 text-center"
       >
         <h1 className="text-3xl font-bold">My Profile</h1>
-         
       </motion.div>
 
       <motion.div
@@ -132,7 +129,7 @@ export default function ProfilePage() {
                   <Avatar className="h-24 w-24 border-4 border-primary/20">
                     <AvatarImage src="/placeholder.svg" alt="Profile picture" />
                     <AvatarFallback className="bg-primary/10 text-primary text-xl">
-                      {formData.name
+                      {userName
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
@@ -163,10 +160,10 @@ export default function ProfilePage() {
                   Full Name
                 </Label>
                 <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  id="userName"
+                  name="userName"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value) }
                   disabled={!isEditing}
                   className="disabled:opacity-70"
                 />
@@ -182,8 +179,8 @@ export default function ProfilePage() {
                   id="email"
                   name="email"
                   type="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value) }
                   disabled={!isEditing}
                   className="disabled:opacity-70"
                 />
@@ -199,8 +196,8 @@ export default function ProfilePage() {
                   id="phone"
                   name="phone"
                   type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value) }
                   disabled={!isEditing}
                   className="disabled:opacity-70"
                 />
@@ -217,10 +214,8 @@ export default function ProfilePage() {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    value={
-                      isEditing ? formData.actualPassword : formData.password
-                    }
-                    onChange={handleChange}
+                    value={isEditing ? password : password}
+                    onChange={(e) => setPassword(e.target.value) }
                     disabled={!isEditing}
                     className="disabled:opacity-70 pr-10"
                   />
@@ -326,15 +321,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 mt-16">
-//       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-//         <div className="bg-white rounded-lg shadow overflow-hidden">
-//           {/* Header */}
-//           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-5 sm:px-6">
-//             <h1 className="text-2xl font-bold text-white">My Profile</h1>
-//             <p className="mt-1 text-sm text-purple-100">
-//               Manage your account information
-//             </p>
-//           </div>

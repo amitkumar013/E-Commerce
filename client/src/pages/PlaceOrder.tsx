@@ -1,142 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useCart } from "@/context/cartContext";
-// import { useAuth } from "@/context/authContext";
-// import { useNavigate } from "react-router-dom";
-// import { Button } from "@/components/ui/button";
-// import { Card } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import toast from "react-hot-toast";
-// import axios from "axios";
-
-// export default function PlaceOrder() {
-//   const { cart } = useCart();
-//   const { auth } = useAuth();
-//   const navigate = useNavigate();
-//   const [totalAmount, setTotalAmount] = useState(0);
-//   const [shippingAddress, setShippingAddress]: any = useState({
-//     name: "",
-//     phone: "",
-//     address: "",
-//     city: "",
-//     state: "",
-//     zipCode: "",
-//     country: "",
-//   });
-//   const [paymentMethod, setPaymentMethod] = useState("COD");
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-//   const [successMessage, setSuccessMessage] = useState("");
-
-//   useEffect(() => {
-//     const total = cart.reduce((sum, item) => sum + item.discountPrice * item.quantity, 0);
-//     setTotalAmount(total);
-//   }, [cart]);
-
-//   const handleAddressChange = (e: any) => {
-//     setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
-//   };
-
-//   const handleConfirmOrder = async () => {
-//     setLoading(true);
-//     setError("");
-//     setSuccessMessage("");
-
-//     if (cart.length === 0) {
-//       toast.error("Cart is empty. Add items before placing an order.");
-//       setLoading(false);
-//       return;
-//     }
-
-//     const orderData = {
-//       orderItems: cart.map((item) => ({
-//         product: item._id,
-//         name: item.name,
-//         quantity: item.quantity,
-//         price: item.discountPrice,
-//       })),
-//       totalAmount,
-//       shippingAddress,
-//       paymentMethod,
-//     };
-
-//     try {
-//       const URI = import.meta.env.VITE_BACKEND_URL;
-//       const response = await axios.post(`${URI}/orders/place-order`, orderData, {
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${auth?.token}`,
-//         },
-//       });
-
-//       setSuccessMessage("Order placed successfully!");
-//       toast.success("Order placed successfully!");
-//       //navigate(`/payment?orderId=${response.data.data._id}&paymentMethod=${paymentMethod}`);
-
-//     } catch (error: any) {
-//       toast.error(error.response?.data?.message || "Something went wrong");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="mt-20 min-h-screen bg-gray-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-//       {/* Left Side - Shipping Address */}
-//       <Card className="p-6 shadow-lg">
-//         <h2 className="text-lg font-semibold">Shipping Address</h2>
-//         <div className="mt-4 space-y-3">
-//           {["name", "phone", "address", "city", "state", "zipCode", "country"].map((field) => (
-//             <div key={field}>
-//               <Label className="text-sm font-medium">{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
-//               <Input name={field} value={shippingAddress[field]} onChange={handleAddressChange} />
-//             </div>
-//           ))}
-//         </div>
-//       </Card>
-
-//       {/* Right Side - Order Details */}
-//       <Card className="p-6 shadow-lg">
-//         <h2 className="text-lg font-semibold">Order Details</h2>
-//         <div className="mt-4 space-y-3">
-//           {cart.map((item) => (
-//             <div key={item._id} className="flex justify-between">
-//               <span>{item.name} (x{item.quantity})</span>
-//               <span>₹{item.discountPrice * item.quantity}</span>
-//             </div>
-//           ))}
-//         </div>
-//         <div className="mt-4 flex justify-between font-bold text-lg">
-//           <span>Total Amount:</span>
-//           <span>₹{totalAmount}</span>
-//         </div>
-
-//         {/* Payment Method Selection */}
-//         <div className="mt-6">
-//           <Label className="text-sm font-medium">Select Payment Method</Label>
-//           <Select value={paymentMethod} onValueChange={(value) => setPaymentMethod(value)}>
-//             <SelectTrigger className="w-full mt-2">
-//               <SelectValue placeholder="Select Payment Method" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               <SelectItem value="COD">Cash on Delivery (COD)</SelectItem>
-//               <SelectItem value="Online">Online Payment</SelectItem>
-//             </SelectContent>
-//           </Select>
-//         </div>
-
-//         {error && <p className="text-red-500 mt-3">{error}</p>}
-//         {successMessage && <p className="text-green-500 mt-3">{successMessage}</p>}
-
-//         <Button className="mt-6 w-full" onClick={handleConfirmOrder} disabled={loading}>
-//           {loading ? "Placing Order..." : "Proceed to Payment"}
-//         </Button>
-//       </Card>
-//     </div>
-//   );
-// }
-
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/cartContext";
 import { useAuth } from "@/context/authContext";
@@ -156,7 +17,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function PlaceOrder() {
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const { auth } = useAuth();
   const navigate = useNavigate();
   const [totalAmount, setTotalAmount] = useState(0);
@@ -185,8 +46,17 @@ export default function PlaceOrder() {
     setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
   };
 
+  const isShippingAddressValid = () => {
+    return Object.values(shippingAddress).every((value:any) => value.trim() !== "");
+  };
+
   //  COD Order Placement
   const handleCODOrder = async () => {
+    if (!isShippingAddressValid()) {
+      toast.error("Please fill all shipping address fields");
+      return;
+    }
+  
     setLoading(true);
     try {
       const orderData = {
@@ -208,7 +78,8 @@ export default function PlaceOrder() {
         },
       });
       toast.success("Order placed successfully!");
-      navigate("/orderconfirmation");
+      clearCart();
+      navigate("/order-success");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Order placement failed");
     } finally {
@@ -218,6 +89,11 @@ export default function PlaceOrder() {
 
   //  Online Payment with Razorpay
   const handleOnlinePayment = async () => {
+    if (!isShippingAddressValid()) {
+      toast.error("Please fill all shipping address fields");
+      return;
+    }
+  
     setLoading(true);
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
@@ -243,8 +119,6 @@ export default function PlaceOrder() {
           },
         }
       );
-      console.log("Checkout API Response:", data);
-      console.log("Checkout API Order Data:", data.data.order);
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
@@ -280,8 +154,8 @@ export default function PlaceOrder() {
               }
             );
             if (verifyResponse.data.success) {
-              console.log("Payment verified successfully!");
               toast.success("Payment Successful");
+              clearCart();
               navigate("/order-success");
             } else {
               console.error("❌ Payment failed", verifyResponse.data.message);
@@ -318,7 +192,6 @@ export default function PlaceOrder() {
 
   return (
     <div className="mt-20 min-h-screen bg-gray-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Left Side - Shipping Address */}
       <Card className="p-6 shadow-lg">
         <h2 className="text-lg font-semibold">Shipping Address</h2>
         <div className="mt-4 space-y-3">

@@ -60,7 +60,7 @@ export const AutoCarousel = () => {
       onMouseEnter={() => setIsHovered(false)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-[30vh] md:h-[60vh] w-full">
+      <div className="relative h-[25vh] md:h-[40vh] w-full">
         {images.map((image, index) => (
           <div
             key={index}
@@ -101,7 +101,7 @@ export const AutoCarousel = () => {
       {/* Navigation Controls */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-white/20"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-blue-400"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-6 h-6" />
@@ -109,14 +109,14 @@ export const AutoCarousel = () => {
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-white/20"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm opacity-50 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white hover:bg-blue-400"
         aria-label="Next slide"
       >
         <ChevronRight className="w-6 h-6" />
       </button>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-2">
         {images.map((_, index) => (
           <button
             key={index}

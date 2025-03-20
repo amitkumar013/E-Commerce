@@ -10,6 +10,8 @@ import { CartPage } from "./pages/CartPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import PlaceOrder from "./pages/PlaceOrder";
 import ProfilePage from "./pages/ProfilePage";
+import OrderSuccess from "./pages/OrderSuccess";
+import MyOrder from "./pages/MyOrdersPage";
 
 const router = createBrowserRouter([
     {
@@ -40,10 +42,14 @@ const router = createBrowserRouter([
             path: "place-order",
             element: <PlaceOrder />
           },
-          // {
-          //   path: "payment",
-          //   element: <Payment />
-          // },
+          {
+            path: "order-success",
+            element: <OrderSuccess />
+          },
+          {
+            path: "my-order",
+            element: <MyOrder />
+          },
           {
             path: "*",
             element: <PageNotFound />

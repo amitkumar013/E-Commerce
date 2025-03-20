@@ -22,6 +22,16 @@ const userSchema = new mongoose.Schema (
             type: String,
             required: [true, 'Password is required']
         },
+        phone: {
+            type: String,
+            required: [true, 'Phone number is required'],
+            validate: {
+                validator: function(v) {
+                    return /^\+91[6-9]\d{9}$/.test(v);
+                },
+                message: "Invalid phone number"
+            }
+        },
         avatar: {
             type: String,
         },

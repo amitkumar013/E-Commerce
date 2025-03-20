@@ -1,12 +1,5 @@
 import { useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Card,
   CardContent,
   CardFooter,
@@ -31,13 +24,10 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [role, setRole] = useState("admin");
   const navigate = useNavigate();
 
-  const handleRoleChange = (value: string) => {
-    setRole(value);
-  };
-  // async (e: React.FormEvent<HTMLFormElement>) => {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -55,6 +45,7 @@ export default function RegisterPage() {
         userName,
         email,
         password,
+        phone,
         role,
       });
       if (res.data && res.data.success) {
@@ -63,6 +54,7 @@ export default function RegisterPage() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        setPhone("");
         setRole("admin");
         navigate("/");
       } else {
@@ -178,21 +170,25 @@ export default function RegisterPage() {
                 />
               </div>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="role" className="flex items-center gap-2">
-                Role
+              <Label htmlFor="phone" className="flex items-center gap-2">
+                Phone Number
               </Label>
-              <Select name="role" value={role} onValueChange={handleRoleChange}>
-                <SelectTrigger className="pl-10 relative">
-                  <Icons.role className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">User</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <Icons.spinner className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
+
             {error && <div className="text-red-600 text-sm">{error}</div>}
             <Button className="w-full" type="submit" disabled={isLoading}>
               {isLoading && (
