@@ -58,6 +58,7 @@ export default function AddProduct() {
   const authData = localStorage.getItem("auth");
   const parsedAuth = authData ? JSON.parse(authData) : null;
   const token = parsedAuth?.data?.token;
+  const URI = import.meta.env.VITE_BACKEND_URL;
 
   const handleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -86,7 +87,8 @@ export default function AddProduct() {
         toast.error("Failed to fetch categories");
       }
     } catch (error) {
-      toast.error("Couldn't get categories");
+      toast.error("Add categories");
+      navigate("/admin/category");
     }
   };
   useEffect(() => {
@@ -121,10 +123,7 @@ export default function AddProduct() {
         }
       });
 
-      const { data } = await axios.post(
-        "http://localhost:8000/api/v1/products/add",
-        productData,
-        {
+      const { data } = await axios.post(`${URI}/api/v1/products/add`, productData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
@@ -134,7 +133,6 @@ export default function AddProduct() {
 
       if (data?.success) {
         toast.success("🎉 Product create successfully");
-
         setName("");
         setDescription("");
         setPrice("");

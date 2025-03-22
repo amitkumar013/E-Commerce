@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Menu,
   Search,
   ShoppingCart,
   User,
@@ -11,22 +10,22 @@ import {
   LogOut,
   CreditCard,
   Settings,
+  Shield,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/cartContext";
 import { useAuth } from "@/context/authContext";
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { cart } = useCart();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
-  // Logout Functionality
   const handleLogout = () => {
     localStorage.removeItem("auth");
     setAuth({ user: null, token: "" });
@@ -37,40 +36,29 @@ export function Header() {
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto px-4 py-4 flex items-center">
-        {/* Mobile Menu Button */}
-        <Button onClick={toggleMenu} className="md:hidden mr-4">
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </Button>
 
         <Link to="/" className="text-2xl font-bold text-primary mr-auto">
           EShop
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6 ml-6">
+        <nav className="hidden md:flex items-center space-x-2 ml-4">
           <Link to="/collection" className="text-gray-600 hover:text-primary">
-           All Categories
+            Collection
           </Link>
         </nav>
 
-        {/* Search Bar */}
         <div className="hidden md:flex items-center space-x-2 flex-1 max-w-md mx-6">
-          <Input
-            type="text"
-            placeholder="Search products..."
-            className="w-full"
-          />
+          <Input type="text" placeholder="Search products" className="w-full" />
           <Button size="icon">
             <Search className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Icons Section */}
-        <div className="flex items-center space-x-4">
-          {/* Mobile Search Button */}
-          <Button variant="ghost" size="icon" className="md:hidden">
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSearch}>
             <Search className="h-5 w-5" />
           </Button>
-          
+
           {/* User Dropdown */}
           <div className="relative">
             <Button
@@ -83,8 +71,19 @@ export function Header() {
             </Button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
+              <div className="absolute left-0 items-center w-48 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
                 <ul className="py-2 text-sm text-gray-700">
+                  <li>
+                    <Link
+                      to="/my-order"
+                      className="flex items-center px-4 py-2 hover:bg-gray-100 w-full"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2 text-blue-500" /> My
+                      Order
+                    </Link>
+                  </li>
+
                   <li>
                     <Link
                       to="/wishlist"
@@ -103,16 +102,7 @@ export function Header() {
                       <User className="h-4 w-4 mr-2 text-gray-600" /> Profile
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      to="/my-order"
-                      className="flex items-center px-4 py-2 hover:bg-gray-100 w-full"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2 text-blue-500" />{" "}
-                      My Order
-                    </Link>
-                  </li>
+
                   <li>
                     <Link
                       to="/payment"
@@ -156,23 +146,28 @@ export function Header() {
               )}
             </Button>
           </Link>
+
+          {/* Admin */}
+          <Link to="http://localhost:5174" className="relative">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center gap-1"
+            >
+              <Shield className="h-5 w-5" />
+              Admin
+            </Button>
+          </Link>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <nav className="flex flex-col space-y-4 px-4 py-6 bg-gray-50">
-            <Link to="/products" className="text-gray-600 hover:text-primary">
-              Products
-            </Link>
-            <Link to="/categories" className="text-gray-600 hover:text-primary">
-              Categories
-            </Link>
-            <Link to="/deals" className="text-gray-600 hover:text-primary">
-              Deals
-            </Link>
-          </nav>
+      {isSearchOpen && (
+        <div className="md:hidden px-4 py-2 bg-gray-100 flex items-center">
+          <Input type="text" placeholder="Search products" className="w-full" />
+          <Button size="icon" onClick={toggleSearch}>
+            <X className="h-5 w-5" />
+          </Button>
         </div>
       )}
     </header>

@@ -27,6 +27,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("admin");
   const navigate = useNavigate();
+  const URI = import.meta.env.VITE_BACKEND_URL;
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,9 +40,8 @@ export default function RegisterPage() {
       return;
     }
 
-    // const res = await axios.post(`${process.env.BACKEND_API}/users/register`, {name, email, password, role})
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/users/register", {
+      const res = await axios.post(`${URI}/api/v1/users/register`, {
         userName,
         email,
         password,

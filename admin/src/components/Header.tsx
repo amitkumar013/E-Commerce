@@ -2,13 +2,15 @@ import { Bell, LogOut, Menu, Settings, User } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useAuth } from "@/context/authContext";
+import { useNavigate } from "react-router-dom";
 
 function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
   return (
@@ -40,6 +42,15 @@ function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
 }
 
 function UserNav() {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    setAuth({ user: null, token: "" });
+    navigate("/auth/login");
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -70,8 +81,12 @@ function UserNav() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <button
+            className="flex items-center px-2 py-2 hover:bg-red-100 w-full text-red-600"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4 mr-2" /> Logout
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

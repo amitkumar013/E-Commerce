@@ -20,20 +20,10 @@ const createToken = (id) => {
 //--------------------Register User--------------------
 const registerUser = asyncHandler(async (req, res) => {
     const { userName, email, password, phone, role } = req.body;
-  
-    if (!userName) { 
-      throw new ApiError(400, "Username is required");
+
+    if (!userName || !email || !password || !phone){
+      throw new ApiError(400, "All fields are required");
     }
-    if (!email) {
-      throw new ApiError(400, "Email is required");
-    }
-    if (!password) {
-      throw new ApiError(400, "Password is required");
-    }
-    if (!phone) {
-      throw new ApiError(400, "Phone number is required");
-    }
-  
     const existedUser = await User.findOne({ email })
   
     if (existedUser) {
@@ -106,8 +96,47 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   });
 
+//--------------------Update Profile Details------------
+const updateProfileDetails = asyncHandler(async (req, res) => {
+
+  const {userName, email, password, phone} = req.body
+  const userId = req.user?.id;
+  console.log("User Id: " + userId)
+
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+
+  let hashedPassword = undefined;
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, 10);
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(userId,
+    {
+      $set: { 
+        userName, 
+        email, 
+        password: hashedPassword || undefined, 
+        phone
+      }
+    },
+    {
+      new: true
+    }
+  ) 
+  if (!updatedUser) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+  .status(200)
+  .json( new ApiResponse(200, updatedUser, "Profile details updated successfully"))
+
+})
 
 export {
   registerUser, 
-  loginUser 
+  loginUser,
+  updateProfileDetails
 };

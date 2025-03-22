@@ -41,6 +41,7 @@ export default function CategoriesPage() {
   const authData = localStorage.getItem("auth");
   const parsedAuth = authData ? JSON.parse(authData) : null;
   const token = parsedAuth?.data?.token;
+  const URI = import.meta.env.VITE_BACKEND_URL;
 
   //-------------Get All Categories------------
   const getAllCategories = async () => {
@@ -67,9 +68,7 @@ export default function CategoriesPage() {
   const handleCreateCategory = async (e: any) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        "http://localhost:8000/api/v1/categorys/create-category",
-        { name, categoryType },
+      const { data } = await axios.post(`${URI}/api/v1/categorys/create-category`, { name, categoryType },
         {
           headers: {
             Authorization: `Bearer ${token}`,

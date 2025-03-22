@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { auth, setAuth } = useAuth();
+  const URI = import.meta.env.VITE_BACKEND_URL;
 
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/users/login", {
+      const res = await axios.post(`${URI}/api/v1/users/login`, {
         email,
         password,
       });
