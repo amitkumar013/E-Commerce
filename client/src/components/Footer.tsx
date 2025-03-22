@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, YoutubeIcon as YouTube } from 'lucide-react'
+import { Facebook, Twitter, Instagram, YoutubeIcon as YouTube, Shield } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Link } from 'react-router-dom'
@@ -32,6 +32,11 @@ export function Footer() {
                 <span className="sr-only">YouTube</span>
                 <YouTube className="h-6 w-6" />
               </a>
+
+              <a href="https://eshop-admin-sand-gamma.vercel.app" className="text-muted-foreground hover:text-foreground">
+                <span className="sr-only">Admin Panel</span>
+                <Shield className="h-6 w-6" />
+              </a>
             </div>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
@@ -41,7 +46,7 @@ export function Footer() {
                 <ul className="mt-4 space-y-4">
                   <li>
                     <Link to="/collection" className="text-base text-muted-foreground hover:text-foreground">
-                      All Products
+                      Collection
                     </Link>
                   </li>
                   <li>
