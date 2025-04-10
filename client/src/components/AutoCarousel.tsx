@@ -60,7 +60,7 @@ export const AutoCarousel = () => {
       onMouseEnter={() => setIsHovered(false)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-[25vh] md:h-[40vh] w-full">
+      <div className="relative h-[30vh] md:h-[60vh] w-full">
         {images.map((image, index) => (
           <div
             key={index}

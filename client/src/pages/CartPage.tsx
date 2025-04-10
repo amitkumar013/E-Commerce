@@ -128,7 +128,6 @@ export function CartPage() {
           </div>
         )}
 
-        {/* Show Cart Only If User is Logged In */}
         {auth?.token && (
           <>
             <motion.div

@@ -1,54 +1,96 @@
-import { useState } from "react"
-import { format } from "date-fns"
-import { Package, ShoppingBag, ArrowRight } from "lucide-react"
-import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import { useEffect, useState } from "react";
+import { ShoppingBag, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-interface Order {
-  id: string
-  date: Date
-  status: "processing" | "shipped" | "delivered"
-  total: number
-  items: number
+interface OrderItem {
+  id: string;
+  name: string;
+  images: string;
+  price: number;
+  orderStatus: "processing" | "shipped" | "delivered" | "cancelled";
+  date: string;
 }
 
-export default function MyOrder() {
-  const [orders, ] = useState<Order[]>([
-    {
-      id: "ORD-12345",
-      date: new Date(2023, 2, 15),
-      status: "delivered",
-      total: 129.99,
-      items: 3,
-    },
-    {
-      id: "ORD-12346",
-      date: new Date(2023, 3, 2),
-      status: "shipped",
-      total: 79.99,
-      items: 2,
-    },
-    {
-      id: "ORD-12347",
-      date: new Date(2023, 3, 10),
-      status: "processing",
-      total: 49.99,
-      items: 1,
-    },
-    
-  ])
+export default function OrderList() {
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const URI = import.meta.env.VITE_BACKEND_URL;
+  const hasOrders = orders.length > 0;
+  const navigate = useNavigate();
 
-  const hasOrders = orders.length > 0
+  const getOrderDetail = async () => {
+    const authData = localStorage.getItem("auth");
+    let token;
+    const parsedAuth = authData ? JSON.parse(authData) : null;
+    token = parsedAuth?.token;
 
-  return (  
+    if (!token) {
+      toast.error("Session expired or not logged in. Redirecting to login.");
+      navigate("/auth/login");
+      return;
+    }
+
+    try {
+      const { data } = await axios.get(`${URI}/api/v1/orders/get-order`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const mappedOrders = data.data.map((order: any) => ({
+        id: order._id,
+        name: order.orderItems[0]?.name || "Unknown Item",
+        images: order.orderItems[0]?.images,
+        price: order.totalAmount,
+        orderStatus: order.orderStatus,
+        date: order.date,
+      }));
+
+      setOrders(mappedOrders);
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        toast.error("Unauthorized access. Please log in again.");
+        navigate("/auth/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getOrderDetail();
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "delivered":
+        return "bg-green-100 text-green-800 hover:bg-green-100";
+      case "shipped":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-100";
+      case "processing":
+        return "bg-amber-100 text-amber-800 hover:bg-amber-100";
+      case "cancelled":
+        return "bg-red-100 text-red-800 hover:bg-red-100";
+      default:
+        return "";
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(price);
+  };
+
+  return (
     <div className="mt-16 container mx-auto px-4 py-8 max-w-5xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">My Orders</h1>
-          <p className="text-muted-foreground mt-1">View and track your order history</p>
+          <p className="text-muted-foreground mt-1">View your order history</p>
         </div>
         <Button className="mt-4 md:mt-0">
           Continue Shopping
@@ -57,50 +99,54 @@ export default function MyOrder() {
       </div>
 
       {hasOrders ? (
-        <div className="grid gap-6">
-          {orders.map((order) => (
+        <div className="grid gap-4">
+          {orders.map((order, index) => (
             <Card key={order.id} className="overflow-hidden">
-              <CardHeader className="bg-muted/50 p-4 md:p-6">
-                <div className="flex flex-col md:flex-row justify-between">
-                  <div>
-                    <CardTitle className="text-lg md:text-xl">{order.id}</CardTitle>
-                    <CardDescription>Ordered on {format(order.date, "MMMM d, yyyy")}</CardDescription>
-                  </div>
-                  <div className="mt-2 md:mt-0">
-                    <Badge
-                      className={
-                        order.status === "delivered"
-                          ? "bg-green-100 text-green-800 hover:bg-green-100"
-                          : order.status === "shipped"
-                            ? "bg-blue-100 text-blue-800 hover:bg-blue-100"
-                            : "bg-amber-100 text-amber-800 hover:bg-amber-100"
-                      }
-                    >
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </Badge>
-                  </div>
+              <CardHeader className="bg-muted/50 p-4">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-lg">Order {index + 1}</CardTitle>
+                  <Badge className={getStatusColor(order.orderStatus)}>
+                    {order.orderStatus.charAt(0).toUpperCase() +
+                      order.orderStatus.slice(1)}
+                  </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-                  <div className="flex items-center">
-                    <Package className="h-5 w-5 text-muted-foreground mr-2" />
-                    <span>
-                      {order.items} {order.items === 1 ? "item" : "items"}
-                    </span>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0">
+                    <img
+                      src={order.images || "/placeholder.svg"}
+                      alt={order.name}
+                      width={80}
+                      height={80}
+                      className="rounded-md object-cover"
+                    />
                   </div>
-                  <div className="mt-2 md:mt-0 font-medium">Total: ${order.total.toFixed(2)}</div>
+                  <div className="flex-grow min-w-0">
+                    <h3 className="font-medium text-base sm:text-lg truncate">
+                      {order.name}
+                    </h3>
+                    <div className="mt-1">
+                      <span className="font-semibold">
+                        {formatPrice(order.price)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right text-sm text-gray-500">
+                    <p className="font-medium text-gray-700">Date:</p>
+                    <p className="font-medium text-gray-700">
+                      {new Date(order.date).toLocaleDateString()}
+                    </p>
+                    <p className="mt-1 font-medium text-gray-700">Time:</p>
+                    <p className="font-medium text-gray-700">
+                      {new Date(order.date).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
                 </div>
               </CardContent>
-              <Separator />
-              <CardFooter className="p-4 md:p-6 flex justify-end">
-                <Link to={`/orders/${order.id}`}>
-                  <Button variant="outline" size="sm">
-                    View Details
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </CardFooter>
             </Card>
           ))}
         </div>
@@ -112,7 +158,8 @@ export default function MyOrder() {
             </div>
             <h2 className="text-2xl font-bold mb-2">No Orders Yet</h2>
             <p className="text-muted-foreground mb-6">
-              You haven't purchased any products yet. Start shopping to see your orders here.
+              You haven't purchased any products yet. Start shopping to see your
+              orders here.
             </p>
             <Link to="/products">
               <Button className="px-8">
@@ -124,6 +171,5 @@ export default function MyOrder() {
         </Card>
       )}
     </div>
-  )
+  );
 }
-

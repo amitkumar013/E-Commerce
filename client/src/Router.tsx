@@ -12,6 +12,7 @@ import PlaceOrder from "./pages/PlaceOrder";
 import ProfilePage from "./pages/ProfilePage";
 import OrderSuccess from "./pages/OrderSuccess";
 import MyOrder from "./pages/MyOrdersPage";
+import WishlistPage from "./pages/WishListPage";
 
 const router = createBrowserRouter([
     {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
           {
             path: "my-order",
             element: <MyOrder />
+          },
+          {
+            path: "wishlist",
+            element: <WishlistPage />
           },
           {
             path: "*",

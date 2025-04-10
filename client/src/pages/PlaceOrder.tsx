@@ -32,6 +32,7 @@ export default function PlaceOrder() {
   });
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<any>({});
   const URI = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -46,14 +47,26 @@ export default function PlaceOrder() {
     setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
   };
 
-  const isShippingAddressValid = () => {
-    return Object.values(shippingAddress).every((value:any) => value.trim() !== "");
+  const validateShippingAddress = () => {
+    const newErrors: any = {};
+    if (!shippingAddress.name.trim()) newErrors.name = "Name is required.";
+    if (!shippingAddress.phone.trim()) newErrors.phone = "Phone number is required.";
+    else if (!/^\d{10}$/.test(shippingAddress.phone.trim())) newErrors.phone = "Enter a valid 10-digit phone number.";
+    if (!shippingAddress.address.trim()) newErrors.address = "Address is required.";
+    if (!shippingAddress.city.trim()) newErrors.city = "City is required.";
+    if (!shippingAddress.state.trim()) newErrors.state = "State is required.";
+    if (!shippingAddress.zipCode.trim()) newErrors.zipCode = "Zip code is required.";
+    else if (!/^\d{6}$/.test(shippingAddress.zipCode.trim())) newErrors.zipCode = "Enter a valid 6-digit zip code.";
+    if (!shippingAddress.country.trim()) newErrors.country = "Country is required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   //  COD Order Placement
   const handleCODOrder = async () => {
-    if (!isShippingAddressValid()) {
-      toast.error("Please fill all shipping address fields");
+    if (!validateShippingAddress()) {
+      toast.error("Please fill the shipping address.");
       return;
     }
   
@@ -65,6 +78,7 @@ export default function PlaceOrder() {
           name: item.name,
           quantity: item.quantity,
           price: item.price,
+          images: item.images,
         })),
         totalAmount,
         shippingAddress,
@@ -89,8 +103,8 @@ export default function PlaceOrder() {
 
   //  Online Payment with Razorpay
   const handleOnlinePayment = async () => {
-    if (!isShippingAddressValid()) {
-      toast.error("Please fill all shipping address fields");
+    if (!validateShippingAddress()) {
+      toast.error("Please fix the errors in the shipping address.");
       return;
     }
   
@@ -103,6 +117,7 @@ export default function PlaceOrder() {
           name: item.name,
           quantity: item.quantity,
           price: item.price,
+          images: item.images,
         })),
         totalAmount,
         shippingAddress,
@@ -212,7 +227,9 @@ export default function PlaceOrder() {
                 name={field}
                 value={shippingAddress[field]}
                 onChange={handleAddressChange}
+                className={errors[field] ? "border-red-500" : ""}
               />
+              {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
             </div>
           ))}
         </div>
