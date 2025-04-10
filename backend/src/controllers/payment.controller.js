@@ -56,18 +56,6 @@ const verifyPayment = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) throw new ApiError(401, "Unauthorized User");
 
-  // Verify Razorpay signature
-  // const body = `${razorpay_order_id}|${razorpay_payment_id}`;
-  // const expectedSignature = crypto
-  //   .createHmac("sha256", process.env.RAZORPAY_SECRET)
-  //   .update(body)
-  //   .digest("hex");
-
-  // if (expectedSignature !== razorpay_signature) {
-  //   throw new ApiError(400, "Payment verification failed");
-  // }
-
-  // Save payment details
   const payment = await Payment.create({
     buyer: userId,
     orderItems,

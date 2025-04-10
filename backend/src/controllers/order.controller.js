@@ -6,8 +6,7 @@ import { Order } from "../models/order.model.js";
  
 //--------------------Order Placed------------------------
 const orderPlaced = asyncHandler(async (req, res) => {
-  const { orderItems, totalAmount, shippingAddress, paymentMethod } =
-    req.body;
+  const { orderItems, totalAmount, shippingAddress, paymentMethod } = req.body;
   const userId = req.user?.id;
 
   if (!userId) {
@@ -27,10 +26,6 @@ const orderPlaced = asyncHandler(async (req, res) => {
   }
 
   try {
-    console.log("User ID from Token:", userId);
-    console.log("Order Items Data:", orderItems);
-    console.log("Total Amount:", totalAmount);
-
     const user = await User.findById(userId);
     if (!user) {
       throw new ApiError(404, "User not found");
@@ -57,6 +52,31 @@ const orderPlaced = asyncHandler(async (req, res) => {
   }
 });
 
+//--------------------Get Order Detail--------------------
+const getOrderDetail = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+  try {
+    const orders = await Order.find({ buyer: userId })
+    .populate("buyer", "userName")
+    .populate("orderItems.product")
+    .sort({ date: -1 });
+
+    if (!orders.length) {
+      throw new ApiError(404, "No orders found for this user");
+    }
+    return res.json(new ApiResponse(200, orders, "Order Details fetched successfully"));
+    
+  } catch (error) {
+    console.log("Order Detail Error:", error);
+    throw new ApiError(500, error.message || "Something went wrong");
+  }
+})
+
+
 export {
   orderPlaced,
+  getOrderDetail,
 };
