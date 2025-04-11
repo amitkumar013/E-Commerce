@@ -10,7 +10,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth } from "@/context/authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
   return (
@@ -72,8 +72,11 @@ function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+          <Link to="admin/profile" className="flex items-center">
+            <User className="mr-4 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+           
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings className="mr-2 h-4 w-4" />

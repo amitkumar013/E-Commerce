@@ -38,20 +38,19 @@ export default function CategoriesPage() {
   const [editName, setEditName] = useState("");
   const [editCategoryType, setEditCategoryType] = useState("");
 
-  const authData = localStorage.getItem("auth");
-  const parsedAuth = authData ? JSON.parse(authData) : null;
-  const token = parsedAuth?.data?.token;
+  const auth = localStorage.getItem("auth");
+  const token = auth ? JSON.parse(auth).token : null;
   const URI = import.meta.env.VITE_BACKEND_URL;
 
   //-------------Get All Categories------------
   const getAllCategories = async () => {
     
-      const { data } = await axios.get(
-        "http://localhost:8000/api/v1/categorys/get-all-category",
+      const { data } = await axios.get(`${URI}/api/v1/categorys/get-all-category`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          timeout: 20000,
         }
       );
       if (data?.success) {
@@ -101,8 +100,7 @@ export default function CategoriesPage() {
       return;
     }
     try {
-      const { data } = await axios.patch(
-        `http://localhost:8000/api/v1/categorys/update-category/${editingCategory._id}`,
+      const { data } = await axios.patch(`${URI}/api/v1/categorys/update-category/${editingCategory._id}`,
         { name: editName, categoryType: editCategoryType },
         {
           headers: {
@@ -129,7 +127,7 @@ export default function CategoriesPage() {
   //-------------Delete Categories-------------
   const handleDeleteCategory = async (id: string) => {
     try {
-      const { data } = await axios.delete(`${"http://localhost:8000/api/v1/categorys/delete-category"}/${id}`,
+      const { data } = await axios.delete(`${URI}/api/v1/categorys/delete-category"}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

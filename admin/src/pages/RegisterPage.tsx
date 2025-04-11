@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +28,15 @@ export default function RegisterPage() {
   const [role, setRole] = useState("admin");
   const navigate = useNavigate();
   const URI = import.meta.env.VITE_BACKEND_URL;
+
+  useEffect(() => {
+    const auth = localStorage.getItem("auth");
+    const token = auth ? JSON.parse(auth).token : null;
+
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +58,7 @@ export default function RegisterPage() {
         role,
       });
       if (res.data && res.data.success) {
-        toast.success(res.data.message)
+        toast.success(res.data.message);
         setName("");
         setEmail("");
         setPassword("");
@@ -58,13 +67,13 @@ export default function RegisterPage() {
         setRole("admin");
         navigate("/");
       } else {
-        toast.error(res.data.message)
+        toast.error(res.data.message);
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.")
+      toast.error("Something went wrong. Please try again.");
       setError("An error occurred while submitting the register form");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 

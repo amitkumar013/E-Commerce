@@ -8,7 +8,6 @@ import {
   ShoppingCart,
   Users,
   Package,
-  CreditCard,
   Settings,
   ChevronRight,
   X,
@@ -53,11 +52,9 @@ export default function DashboardLayout() {
             {[
               { icon: BarChart3, label: "Dashboard", path: "/", active: false },
               { icon: Users, label: "Add Category", path: "admin/category" },
-              { icon: ShoppingCart, label: "Add Product", path: "admin/add-product" },
+              { icon: Package, label: "Add Product", path: "admin/add-product" },
               { icon: LucidePercentDiamond, label: "Product Manage", path: "admin/product-management" },
-              { icon: ShoppingCart, label: "Orders", path: "/orders" },
-              { icon: Package, label: "Products", path: "/products" },
-              { icon: CreditCard, label: "Transactions", path: "/transactions" },
+              { icon: ShoppingCart, label: "Users Order", path: "/admin/order" },
               { icon: Settings, label: "Settings", path: "/settings" },
             ].map((item, index) => (
               <li key={index}>

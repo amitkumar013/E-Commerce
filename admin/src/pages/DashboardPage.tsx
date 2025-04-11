@@ -1,8 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CreditCard, ShoppingCart, Users, Package } from "lucide-react";
+//import toast from "react-hot-toast";
+//import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
+  // const navigate = useNavigate();
+
+  // const authData = localStorage.getItem("auth");
+  //   let token;
+  //   const parsedAuth = authData ? JSON.parse(authData) : null;
+  //   token = parsedAuth?.token;
+
+  //   if (!token) {
+  //     toast.error("Session expired or not logged in. Redirecting to login.");
+  //     navigate("/auth/login");
+  //     return;
+  //   }
+
+
   return (
     <div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -89,6 +105,7 @@ function DashboardCard({
   icon: React.ElementType;
   trend: "up" | "down" | "neutral";
 }) {
+
   return (
     <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

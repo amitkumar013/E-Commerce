@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,17 +15,27 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
   const URI = import.meta.env.VITE_BACKEND_URL;
-
   const navigate = useNavigate();
+
+  //Redirect if already logged in
+  useEffect(() => {
+    const auth = localStorage.getItem("auth");
+    const token = auth ? JSON.parse(auth).token : null;
+
+    if (token) {
+      toast.success("You're already logged in.");
+      navigate("/");
+    }  
+  }, []);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,20 +45,13 @@ export default function LoginPage() {
         email,
         password,
       });
-      if (res && res.data.success) {
-        setAuth({
-          ...auth,
-          user: res.data.user,
-          token: res.data.accessToken,
-        });
-        localStorage.setItem("auth", JSON.stringify(res.data));
-
-        toast.success(res.data.message);
+      if (res?.data?.success) {
+        const { token, loggedInUser } = res.data.data;
+        const authData = { token, user: loggedInUser };
+        setAuth(authData);
+        localStorage.setItem("auth", JSON.stringify(authData));
 
         navigate("/");
-      } else{
-        toast.error(res.data.message);
-        setError("Invalid email or password");
       }
     } catch (error) {
       toast.error("Invalid email or password");
@@ -110,8 +113,14 @@ export default function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col p-6">
-            <Button className="w-full bg-primary text-white py-2 rounded-md" type="submit" disabled={isLoading}>
-              {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+            <Button
+              className="w-full bg-primary text-white py-2 rounded-md"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {isLoading ? "Signing In..." : "Sign In"}
             </Button>
             {error && (
@@ -122,7 +131,10 @@ export default function LoginPage() {
 
             <p className="text-sm text-gray-600 text-center mt-4">
               Don't have an account?{" "}
-              <Link to="/auth/register" className="text-primary hover:underline">
+              <Link
+                to="/auth/register"
+                className="text-primary hover:underline"
+              >
                 Sign up
               </Link>
             </p>

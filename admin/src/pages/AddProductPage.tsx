@@ -54,10 +54,8 @@ export default function AddProduct() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  //const token = JSON.parse(localStorage.getItem("auth") || "{}")?.data?.token || "";
-  const authData = localStorage.getItem("auth");
-  const parsedAuth = authData ? JSON.parse(authData) : null;
-  const token = parsedAuth?.data?.token;
+  const auth = localStorage.getItem("auth");
+  const token = auth ? JSON.parse(auth).token : null;
   const URI = import.meta.env.VITE_BACKEND_URL;
 
   const handleImageChange = (
@@ -73,8 +71,7 @@ export default function AddProduct() {
   //-------------Get All Categories------------
   const getAllCategories = async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:8000/api/v1/categorys/get-all-category",
+      const { data } = await axios.get(`${URI}/api/v1/categorys/get-all-category`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

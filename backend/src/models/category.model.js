@@ -15,6 +15,7 @@ const categorySchema = new mongoose.Schema(
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      index: true,
     },
     slug: {
       type: String,
