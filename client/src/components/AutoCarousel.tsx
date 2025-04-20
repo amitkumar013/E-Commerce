@@ -60,7 +60,7 @@ export const AutoCarousel = () => {
       onMouseEnter={() => setIsHovered(false)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-[30vh] md:h-[60vh] w-full">
+      <div className="relative h-[30vh] md:h-[70vh] w-full">
         {images.map((image, index) => (
           <div
             key={index}
@@ -87,12 +87,12 @@ export const AutoCarousel = () => {
               className="object-cover w-full h-full"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
               <p className="text-xs md:text-sm uppercase tracking-wider mb-1 md:mb-2">
                 Featured Product
               </p>
-              <h2 className="text-xl md:text-3xl font-medium">{image.title}</h2>
+              <h2 className="text-lg md:text-3xl font-medium">{image.title}</h2>
             </div>
           </div>
         ))}

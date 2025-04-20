@@ -15,12 +15,13 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import { Toaster } from 'react-hot-toast';
+import easyShop from "@/assets/EasyShop.png";
 
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900">
+    <div className="flex h-screen overflow-hidden bg-orange-50 dark:bg-gray-900">
       {/* Sidebar with overlay */}
       <div
         className={cn(
@@ -36,8 +37,15 @@ export default function DashboardLayout() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
-          <h2 className="text-xl font-bold text-primary">Admin Dashboard</h2>
+        <div className="flex items-center justify-between p-1.5 border-b dark:border-gray-700">
+          <Link to="/" className="flex items-center text-xl font-bold text-primary mr-auto">
+          <img
+            src={easyShop}
+            alt="easyShop Logo"
+            className="h-12 w-12 mr-2"
+          />
+          <h2 className="text-xl font-bold text-primary">easyShop</h2>
+        </Link>
           <Button
             variant="ghost"
             size="icon"

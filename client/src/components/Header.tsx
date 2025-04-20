@@ -8,14 +8,13 @@ import {
   X,
   Heart,
   LogOut,
-  CreditCard,
   Settings,
   Shield,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/cartContext";
 import { useAuth } from "@/context/authContext";
-
+import easyShop from "@/assets/EasyShop.png";
 export function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -29,16 +28,19 @@ export function Header() {
   const handleLogout = () => {
     localStorage.removeItem("auth");
     setAuth({ user: null, token: "" });
-    setIsDropdownOpen(false); // Close dropdown
+    setIsDropdownOpen(false);
     navigate("/auth/login");
   };
 
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto px-4 py-4 flex items-center">
-
-        <Link to="/" className="text-2xl font-bold text-primary mr-auto">
-          EShop
+      <div className="container mx-auto px-4 py-2 flex items-center">
+        <Link to="/" className="flex items-center text-xl font-bold text-primary mr-auto">
+          <img
+            src={easyShop}
+            alt="easyShop Logo"
+            className="h-12 w-12 mr-2"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-2 ml-4">
@@ -103,16 +105,6 @@ export function Header() {
                     </Link>
                   </li>
 
-                  <li>
-                    <Link
-                      to="/payment"
-                      className="flex items-center px-4 py-2 hover:bg-gray-100 w-full"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <CreditCard className="h-4 w-4 mr-2 text-green-500" />{" "}
-                      Payment
-                    </Link>
-                  </li>
                   <li>
                     <Link
                       to="/settings"

@@ -11,6 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth } from "@/context/authContext";
 import { Link, useNavigate } from "react-router-dom";
+import easyShop from "@/assets/EasyShop.png";
 
 function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
   return (
@@ -25,9 +26,16 @@ function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
           >
             <Menu className="h-6 w-6" />
           </Button>
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Admin eShop
-          </h1>
+          <div className="md:hidden">
+            <Link to="/" className="flex items-center text-xl font-bold text-primary mr-auto">
+              <img
+                src={easyShop}
+                alt="easyShop Logo"
+                className="h-12 w-12 mr-2"
+              />
+              <h2 className="text-xl font-bold text-primary">easyShop</h2>
+            </Link>
+          </div>
         </div>
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" className="relative">

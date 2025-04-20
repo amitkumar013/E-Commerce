@@ -142,7 +142,7 @@ export default function ProductManage() {
   };
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 max-w-6xl">
+    <div className="container mx-auto pr-4 sm:pr-6 max-w-6xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-6">Product Management</h1>
 
@@ -185,7 +185,7 @@ export default function ProductManage() {
       </div>
 
       {/* Products Table (Desktop) */}
-      <div className="hidden md:block rounded-md border bg-background">
+      <div className="hidden md:block rounded-md border bg-background overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -203,8 +203,6 @@ export default function ProductManage() {
                     <img
                       src={product.images[0] || "/placeholder.svg"}
                       alt={product.name || "Product Image"}
-                      width={16}
-                      height={16}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -240,7 +238,7 @@ export default function ProductManage() {
       </div>
 
       {/* Products Grid (Mobile) */}
-      <div className="grid gap-4 md:hidden">
+      <div className="grid gap-4 md:hidden pr-4">
         {filteredProducts.map((product) => (
           <motion.div
             key={product.id}
@@ -253,10 +251,8 @@ export default function ProductManage() {
                 <div className="flex items-center gap-4">
                   <div className="h-16 w-16 rounded-md border overflow-hidden flex-shrink-0">
                     <img
-                      src={product.images[0] || "/placeholder.svg"} // Use the first image in the array
+                      src={product.images[0] || "/placeholder.svg"}
                       alt={product.name || "Product Image"}
-                      width={16}
-                      height={16}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -296,7 +292,7 @@ export default function ProductManage() {
       </div>
 
       {/* Pagination */}
-      <div className="mt-6">
+      <div className="mt-6 flex justify-center pr-4">
         <Pagination>
           <PaginationContent>
             <PaginationItem>

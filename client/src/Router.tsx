@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import OrderSuccess from "./pages/OrderSuccess";
 import MyOrder from "./pages/MyOrdersPage";
 import WishlistPage from "./pages/WishListPage";
+import SettingPage from "./pages/SettingPage";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
           {
             path: "wishlist",
             element: <WishlistPage />
+          },
+          {
+            path: "settings",
+            element: <SettingPage />
           },
           {
             path: "*",

@@ -92,10 +92,12 @@ export default function OrderList() {
           <h1 className="text-3xl font-bold tracking-tight">My Orders</h1>
           <p className="text-muted-foreground mt-1">View your order history</p>
         </div>
-        <Button className="mt-4 md:mt-0">
-          Continue Shopping
-          <ShoppingBag className="ml-2 h-4 w-4" />
-        </Button>
+        <Link to="/collection">
+          <Button size="lg" className="min-w-[200px]">
+            Continue Shopping
+            <ShoppingBag className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
       </div>
 
       {hasOrders ? (

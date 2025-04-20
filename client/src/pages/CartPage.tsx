@@ -164,6 +164,7 @@ export function CartPage() {
                       <Link to="/collection">
                         <Button size="lg" className="min-w-[200px]">
                           Continue Shopping
+                          <ShoppingBag className="ml-2 h-4 w-4" />
                         </Button>
                       </Link>
                     </Card>
