@@ -69,7 +69,6 @@ export default function PlaceOrder() {
       toast.error("Please fill the shipping address.");
       return;
     }
-  
     setLoading(true);
     try {
       const orderData = {
@@ -107,7 +106,6 @@ export default function PlaceOrder() {
       toast.error("Please fix the errors in the shipping address.");
       return;
     }
-  
     setLoading(true);
     try {
       const URI = import.meta.env.VITE_BACKEND_URL;
@@ -124,9 +122,7 @@ export default function PlaceOrder() {
         paymentMethod: "Online",
       };
 
-      const { data } = await axios.post(
-        `${URI}/api/v1/payments/razorpay-checkout`,
-        orderData,
+      const { data } = await axios.post(`${URI}/api/v1/payments/razorpay-checkout`, orderData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -142,9 +138,8 @@ export default function PlaceOrder() {
         name: "Your Store",
         description: "Test Transaction",
         order_id: data.data.orderId,
-        handler: async function (response: any) {
-          console.log("Payment Success:", response);
-
+        handler: async function (response: any) 
+        {
           try {
             const paymentData = {
               razorpay_payment_id: response.razorpay_payment_id,
@@ -155,7 +150,7 @@ export default function PlaceOrder() {
               shippingAddress: orderData.shippingAddress,
               paymentMethod: "Online",
               paymentStatus: "paid",
-              orderStatus: "order placed",
+              orderStatus: "Order placed",
             };
 
             const verifyResponse = await axios.post(
@@ -188,8 +183,8 @@ export default function PlaceOrder() {
         },
         prefill: {
           name: shippingAddress.name,
-          email: auth?.user?.email || "test@example.com",
-          contact: shippingAddress.phone || "9000090000",
+          email: auth?.user?.email,
+          contact: shippingAddress.phone,
         },
         theme: {
           color: "#3399cc",

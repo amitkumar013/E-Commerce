@@ -99,7 +99,7 @@ const addProduct = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, product, "Product created successfully"));
-}); //  "["name": "blue", "hexCode": "#0000FF"]"
+});
 
 //--------------------Get All Products-------------------
 const getAllProducts = asyncHandler(async (req, res) => {

@@ -1,275 +1,261 @@
-// import { useState } from 'react';
-// import { Edit2, Check, X } from 'lucide-react';
-
-// interface Order {
-//   id: string;
-//   image: string;
-//   name: string;
-//   price: number;
-//   quantity: number;
-//   totalAmount: number;
-//   paymentStatus: 'Paid' | 'Pending' | 'Failed';
-//   orderStatus: 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
-// }
-
-// const initialOrders: Order[] = [
-//   {
-//     id: '1',
-//     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
-//     name: 'Nike Air Max',
-//     price: 129.99,
-//     quantity: 2,
-//     totalAmount: 259.98,
-//     paymentStatus: 'Paid',
-//     orderStatus: 'Processing'
-//   },
-//   {
-//     id: '2',
-//     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30',
-//     name: 'Smart Watch',
-//     price: 199.99,
-//     quantity: 1,
-//     totalAmount: 199.99,
-//     paymentStatus: 'Pending',
-//     orderStatus: 'Processing'
-//   },
-//   {
-//     id: '3',
-//     image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12',
-//     name: 'Wireless Headphones',
-//     price: 89.99,
-//     quantity: 3,
-//     totalAmount: 269.97,
-//     paymentStatus: 'Paid',
-//     orderStatus: 'Shipped'
-//   }
-// ];
-
-// const orderStatusOptions = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
-
-// function OrderPage() {
-//   const [orders, setOrders] = useState<Order[]>(initialOrders);
-//   const [editingId, setEditingId] = useState<string | null>(null);
-//   const [editStatus, setEditStatus] = useState<string>('');
-
-//   const handleEditClick = (order: Order) => {
-//     setEditingId(order.id);
-//     setEditStatus(order.orderStatus);
-//   };
-
-//   const handleStatusSave = (orderId: string) => {
-//     setOrders(orders.map(order => 
-//       order.id === orderId 
-//         ? { ...order, orderStatus: editStatus as Order['orderStatus'] }
-//         : order
-//     ));
-//     setEditingId(null);
-//   };
-
-//   const getStatusColor = (status: string) => {
-//     const colors = {
-//       Processing: 'bg-yellow-100 text-yellow-800',
-//       Shipped: 'bg-blue-100 text-blue-800',
-//       Delivered: 'bg-green-100 text-green-800',
-//       Cancelled: 'bg-red-100 text-red-800',
-//       Paid: 'bg-green-100 text-green-800',
-//       Pending: 'bg-yellow-100 text-yellow-800',
-//       Failed: 'bg-red-100 text-red-800'
-//     };
-//     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-//       <div className="max-w-7xl mx-auto">
-//         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Admin Orders</h1>
-        
-//         <div className="bg-white rounded-lg shadow overflow-hidden">
-//           <div className="overflow-x-auto">
-//             <table className="min-w-full divide-y divide-gray-200 table-auto">
-//               <thead className="bg-gray-50">
-//                 <tr>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Status</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Status</th>
-//                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-//                 </tr>
-//               </thead>
-//               <tbody className="bg-white divide-y divide-gray-200">
-//                 {orders.map((order) => (
-//                   <tr key={order.id} className="hover:bg-gray-50">
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       <div className="flex items-center">
-//                         <div className="h-12 w-12 flex-shrink-0">
-//                           <img className="h-12 w-12 rounded-md object-cover" src={order.image} alt={order.name} />
-//                         </div>
-//                         <div className="ml-4">
-//                           <div className="text-sm font-medium text-gray-900">{order.name}</div>
-//                         </div>
-//                       </div>
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       <div className="text-sm text-gray-900">${order.price.toFixed(2)}</div>
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       <div className="text-sm text-gray-900">{order.quantity}</div>
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       <div className="text-sm text-gray-900">${order.totalAmount.toFixed(2)}</div>
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.paymentStatus)}`}>
-//                         {order.paymentStatus}
-//                       </span>
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap">
-//                       {editingId === order.id ? (
-//                         <select
-//                           value={editStatus}
-//                           onChange={(e) => setEditStatus(e.target.value)}
-//                           className="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-//                         >
-//                           {orderStatusOptions.map((status) => (
-//                             <option key={status} value={status}>{status}</option>
-//                           ))}
-//                         </select>
-//                       ) : (
-//                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.orderStatus)}`}>
-//                           {order.orderStatus}
-//                         </span>
-//                       )}
-//                     </td>
-//                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-//                       {editingId === order.id ? (
-//                         <div className="flex space-x-2">
-//                           <button
-//                             onClick={() => handleStatusSave(order.id)}
-//                             className="text-green-600 hover:text-green-900"
-//                           >
-//                             <Check size={18} />
-//                           </button>
-//                           <button
-//                             onClick={() => setEditingId(null)}
-//                             className="text-red-600 hover:text-red-900"
-//                           >
-//                             <X size={18} />
-//                           </button>
-//                         </div>
-//                       ) : (
-//                         <button
-//                           onClick={() => handleEditClick(order)}
-//                           className="text-indigo-600 hover:text-indigo-900"
-//                         >
-//                           <Edit2 size={18} />
-//                         </button>
-//                       )}
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default OrderPage;
-
-
-
-
-import { useState } from "react"
-import { ChevronDown, ChevronUp, Eye, MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Eye, Save, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
-// Sample order data
-const orders = [
-  {
-    id: "ORD-001",
-    image: "/placeholder.svg?height=50&width=50",
-    name: "Premium Headphones",
-    price: 129.99,
-    quantity: 1,
-    total: 129.99,
-    paymentStatus: "Paid",
-    orderStatus: "Processing",
-  },
-  {
-    id: "ORD-002",
-    image: "/placeholder.svg?height=50&width=50",
-    name: "Wireless Keyboard",
-    price: 59.99,
-    quantity: 2,
-    total: 119.98,
-    paymentStatus: "Paid",
-    orderStatus: "Shipped",
-  },
-  {
-    id: "ORD-003",
-    image: "/placeholder.svg?height=50&width=50",
-    name: "Smart Watch",
-    price: 199.99,
-    quantity: 1,
-    total: 199.99,
-    paymentStatus: "Pending",
-    orderStatus: "Pending",
-  },
-  {
-    id: "ORD-004",
-    image: "/placeholder.svg?height=50&width=50",
-    name: "Bluetooth Speaker",
-    price: 79.99,
-    quantity: 3,
-    total: 239.97,
-    paymentStatus: "Paid",
-    orderStatus: "Delivered",
-  },
-  {
-    id: "ORD-005",
-    image: "/placeholder.svg?height=50&width=50",
-    name: "USB-C Hub",
-    price: 45.99,
-    quantity: 1,
-    total: 45.99,
-    paymentStatus: "Failed",
-    orderStatus: "Cancelled",
-  },
-]
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
+interface OrderItem {
+  id: string;
+  name: string;
+  images: string;
+  price: number;
+  orderStatus:
+    | "Order placed"
+    | "Processing"
+    | "Shipped"
+    | "Delivered"
+    | "Cancelled";
+  quantity: number;
+  totalAmount: number;
+  paymentStatus: "Paid" | "Cash" | "Pending" | "Failed";
+  date: string;
+  shippingAddress: {
+    name: string;
+    phone: number;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: number;
+    country: string;
+  };
+}
 
 export default function OrdersPage() {
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+  const [editingStatus, setEditingStatus] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [orderStatuses, setOrderStatuses] = useState<Record<string, string>>(
+    {}
+  );
+  const [viewCustomer, setViewCustomer] = useState<{
+    isOpen: boolean;
+    shippingAddress: any | null;
+    orderId: string;
+  }>({
+    isOpen: false,
+    shippingAddress: null,
+    orderId: "",
+  });
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const URI = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
+
+  //-------Get All Order Details-------//
+  const getOrderDetail = async () => {
+    const authData = localStorage.getItem("auth");
+    let token;
+    const parsedAuth = authData ? JSON.parse(authData) : null;
+    token = parsedAuth?.token;
+
+    if (!token) {
+      toast.error("Session expired or not logged in. Redirecting to login.");
+      navigate("/auth/login");
+      return;
+    }
+
+    try {
+      const { data } = await axios.get(`${URI}/api/v1/orders/get-all-orders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const mappedOrders = data.data.map((order: any) => {
+        const price = order.orderItems[0]?.price || 0;
+        const quantity = order.orderItems[0]?.quantity || 0;
+        return {
+          id: order._id,
+          name: order.orderItems[0]?.name || "Unknown Item",
+          images: order.orderItems[0]?.images,
+          price,
+          quantity,
+          totalAmount: price * quantity,
+          orderStatus: order.orderStatus || "Order Placed",
+          paymentStatus: order.paymentStatus,
+          shippingAddress: order.shippingAddress,
+          date: order.date,
+        };
+      });
+
+      setOrders(mappedOrders);
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        toast.error("Unauthorized access. Please log in again.");
+        navigate("/auth/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getOrderDetail();
+  }, []);
+
+  //-------Update Order Status-------//
+  const updateOrderStatus = async (
+    orderId: string,
+    status:
+      | "order placed"
+      | "processing"
+      | "shipped"
+      | "delivered"
+      | "cancelled"
+  ) => {
+    const authData = localStorage.getItem("auth");
+    const token = authData ? JSON.parse(authData).token : null;
+
+    if (!token) {
+      toast.error("Session expired. Please log in again.");
+      navigate("/auth/login");
+      return;
+    }
+
+    try {
+      const { data } = await axios.patch(
+        `${URI}/api/v1/orders/update-order-status/${orderId}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (data?.success) {
+        toast.success("Order status updated successfully.");
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId
+              ? { ...order, orderStatus: status as OrderItem["orderStatus"] }
+              : order
+          )
+        );
+      } else {
+        toast.error("Failed to update order status.");
+      }
+    } catch (error: any) {
+      toast.error("Something went wrong while updating the order status.");
+    }
+  };
+
+  const toggleEditStatus = (id: string) => {
+    setEditingStatus((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const saveOrderStatus = (orderId: string) => {
+    const status = orderStatuses[orderId];
+    if (!status) {
+      toast.error("Please select a status before saving.");
+      return;
+    }
+    updateOrderStatus(
+      orderId,
+      status as
+        | "order placed"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+    );
+    toggleEditStatus(orderId);
+  };
+
+  //-------View Shipping Address-------//
+  const openCustomerView = (orderId: string) => {
+    const order = orders.find((o) => o.id === orderId);
+    if (order) {
+      setViewCustomer({
+        isOpen: true,
+        shippingAddress: order.shippingAddress,
+        orderId: orderId,
+      });
+    }
+  };
+
+  //-------Close View Address---------//
+  const closeCustomerView = () => {
+    setViewCustomer({
+      isOpen: false,
+      shippingAddress: null,
+      orderId: "",
+    });
+  };
 
   const toggleRow = (id: string) => {
     setExpandedRows((prev) => ({
       ...prev,
       [id]: !prev[id],
-    }))
-  }
+    }));
+  };
 
-  const updateOrderStatus = (orderId: string, status: string) => {
-    console.log(`Updating order ${orderId} status to ${status}`)
-    // In a real app, you would update the order status in your database
-  }
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case "Processing":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-400";
+      case "Shipped":
+        return "bg-purple-100 text-purple-800 hover:bg-purple-400";
+      case "Delivered":
+        return "bg-green-100 text-green-800 hover:bg-green-400";
+      case "Cancelled":
+        return "bg-red-100 text-red-800 hover:bg-red-400";
+      default:
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-400";
+    }
+  };
+
+  const getPaymentBadgeClass = (status: string) => {
+    switch (status) {
+      case "paid":
+        return "bg-green-100 text-green-800 hover:bg-green-400";
+      case "cash":
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-400";
+      case "Failed":
+      default:
+        return "bg-red-100 text-red-800 hover:bg-red-400";
+    }
+  };
 
   return (
-    <div className="container mx-auto p-4 md:p-6">
-      <h1 className="mb-6 text-2xl font-bold text-slate-800">Order Management</h1>
+    <div className="container mx-auto p-4 md:p-6 bg-slate-50">
+      <h1 className="mb-6 text-2xl font-bold text-slate-800">
+        Order Management
+      </h1>
 
       {/* Orders table */}
       <div className="rounded-lg border bg-white shadow">
@@ -277,7 +263,7 @@ export default function OrdersPage() {
         <div className="hidden md:block">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50">
+              <TableRow className="bg-teal-50">
                 <TableHead className="w-[80px]">Image</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Price</TableHead>
@@ -290,66 +276,100 @@ export default function OrdersPage() {
             </TableHeader>
             <TableBody>
               {orders.map((order) => (
-                <TableRow key={order.id} className="hover:bg-slate-50">
+                <TableRow key={order.id} className="hover:bg-teal-50/30">
                   <TableCell>
                     <img
-                      src={order.image || "/placeholder.svg"}
+                      src={order.images || "/placeholder.svg"}
                       alt={order.name}
                       width={50}
                       height={50}
                       className="rounded-md border object-cover"
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{order.name}</TableCell>
-                  <TableCell>${order.price.toFixed(2)}</TableCell>
-                  <TableCell>{order.quantity}</TableCell>
-                  <TableCell>${order.total.toFixed(2)}</TableCell>
+                  <TableCell className="font-medium">
+                    {order.name || "Unknown Product"}
+                  </TableCell>
+                  <TableCell>
+                    ₹{(order.price || 0).toLocaleString("en-IN")}
+                  </TableCell>
+                  <TableCell>{order.quantity || 0}</TableCell>
+                  <TableCell>
+                    ₹{(order.totalAmount || 0).toLocaleString("en-IN")}
+                  </TableCell>
                   <TableCell>
                     <Badge
-                      className={
-                        order.paymentStatus === "Paid"
-                          ? "bg-green-100 text-green-800"
-                          : order.paymentStatus === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                      }
+                      className={getPaymentBadgeClass(order.paymentStatus)}
                     >
                       {order.paymentStatus}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Select
-                      defaultValue={order.orderStatus}
-                      onValueChange={(value) => updateOrderStatus(order.id, value)}
-                    >
-                      <SelectTrigger className="w-[130px]">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Processing">Processing</SelectItem>
-                        <SelectItem value="Shipped">Shipped</SelectItem>
-                        <SelectItem value="Delivered">Delivered</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    {editingStatus[order.id] ? (
+                      <div className="flex items-center space-x-2">
+                        <Select
+                          value={orderStatuses[order.id]}
+                          onValueChange={(value) =>
+                            setOrderStatuses((prev) => ({
+                              ...prev,
+                              [order.id]: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-[130px]">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="order placed"> Order placed </SelectItem>
+                            <SelectItem value="Processing"> Processing </SelectItem>
+                            <SelectItem value="Shipped">Shipped</SelectItem>
+                            <SelectItem value="Delivered">Delivered</SelectItem>
+                            <SelectItem value="Cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => saveOrderStatus(order.id)}
+                          className="h-8 w-8 text-teal-600"
+                        >
+                          <Save className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => toggleEditStatus(order.id)}
+                          className="h-8 w-8 text-slate-600"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Badge className={getStatusBadgeClass( orderStatuses[order.id] || order.orderStatus )}
+                      >
+                        {orderStatuses[order.id] || order.orderStatus}
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View details</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit order</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Cancel order</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 border-teal-200 text-teal-700 hover:bg-teal-50"
+                        onClick={() => openCustomerView(order.id)}
+                      >
+                        <Eye className="mr-1 h-3 w-3" />
+                        View
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="default"
+                        className="h-8 bg-teal-600 hover:bg-teal-700"
+                        onClick={() => toggleEditStatus(order.id)}
+                      >
+                        Edit
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -365,7 +385,7 @@ export default function OrdersPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={order.image || "/placeholder.svg"}
+                      src={order.images || "/placeholder.svg"}
                       alt={order.name}
                       width={40}
                       height={40}
@@ -373,11 +393,22 @@ export default function OrdersPage() {
                     />
                     <div>
                       <div className="font-medium">{order.name}</div>
-                      <div className="text-sm text-slate-500">ID: {order.id}</div>
+                      <div className="text-sm text-slate-500">
+                        ID: {order.id}
+                      </div>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => toggleRow(order.id)}>
-                    {expandedRows[order.id] ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleRow(order.id)}
+                    className="text-teal-600"
+                  >
+                    {expandedRows[order.id] ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
 
@@ -385,7 +416,7 @@ export default function OrdersPage() {
                   <div className="mt-4 grid gap-2 text-sm">
                     <div className="grid grid-cols-2 gap-1">
                       <div className="text-slate-500">Price:</div>
-                      <div>${order.price.toFixed(2)}</div>
+                      <div>₹{order.price}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-1">
                       <div className="text-slate-500">Quantity:</div>
@@ -393,19 +424,13 @@ export default function OrdersPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-1">
                       <div className="text-slate-500">Total:</div>
-                      <div className="font-medium">${order.total.toFixed(2)}</div>
+                      <div className="font-medium">₹{order.totalAmount}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-1">
                       <div className="text-slate-500">Payment:</div>
                       <div>
                         <Badge
-                          className={
-                            order.paymentStatus === "Paid"
-                              ? "bg-green-100 text-green-800"
-                              : order.paymentStatus === "Pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                          }
+                          className={getPaymentBadgeClass(order.paymentStatus)}
                         >
                           {order.paymentStatus}
                         </Badge>
@@ -414,29 +439,76 @@ export default function OrdersPage() {
                     <div className="grid grid-cols-2 gap-1">
                       <div className="text-slate-500">Status:</div>
                       <div>
-                        <Select
-                          defaultValue={order.orderStatus}
-                          onValueChange={(value) => updateOrderStatus(order.id, value)}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Processing">Processing</SelectItem>
-                            <SelectItem value="Shipped">Shipped</SelectItem>
-                            <SelectItem value="Delivered">Delivered</SelectItem>
-                            <SelectItem value="Cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        {editingStatus[order.id] ? (
+                          <div className="flex items-center space-x-2">
+                            <Select
+                              value={orderStatuses[order.id]}
+                              onValueChange={(value) =>
+                                setOrderStatuses((prev) => ({
+                                  ...prev,
+                                  [order.id]: value,
+                                }))
+                              }
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="order placed">
+                                  {" "}
+                                  Order placed{" "}
+                                </SelectItem>
+                                <SelectItem value="Processing">
+                                  {" "}
+                                  Processing{" "}
+                                </SelectItem>
+                                <SelectItem value="Shipped">Shipped</SelectItem>
+                                <SelectItem value="Delivered">
+                                  {" "}
+                                  Delivered{" "}
+                                </SelectItem>
+                                <SelectItem value="Cancelled">
+                                  {" "}
+                                  Cancelled{" "}
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => saveOrderStatus(order.id)}
+                              className="h-8 w-8 text-teal-600"
+                            >
+                              <Save className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Badge
+                            className={getStatusBadgeClass(
+                              orderStatuses[order.id] || order.orderStatus
+                            )}
+                          >
+                            {orderStatuses[order.id] || order.orderStatus}
+                          </Badge>
+                        )}
                       </div>
                     </div>
                     <div className="mt-2 flex justify-end space-x-2">
-                      <Button size="sm" variant="outline" className="h-8">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 border-teal-200 text-teal-700"
+                        onClick={() => openCustomerView(order.id)}
+                      >
                         <Eye className="mr-1 h-3 w-3" />
                         View
                       </Button>
-                      <Button size="sm" variant="default" className="h-8 bg-slate-700 hover:bg-slate-800">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        className="h-8 bg-teal-600 hover:bg-teal-700"
+                        onClick={() => toggleEditStatus(order.id)}
+                      >
                         Edit
                       </Button>
                     </div>
@@ -447,6 +519,89 @@ export default function OrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Customer Details Modal */}
+      <Dialog open={viewCustomer.isOpen} onOpenChange={closeCustomerView}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-teal-700">
+              Customer Information
+            </DialogTitle>
+            <DialogDescription>
+              Order ID: {viewCustomer.orderId}
+            </DialogDescription>
+          </DialogHeader>
+          {viewCustomer.shippingAddress && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  Name:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.name}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  Phone:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.phone}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  Address:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.address}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  City:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.city}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  State:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.state}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  Zipcode:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.zipCode}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="text-right font-medium text-slate-500">
+                  Country:
+                </div>
+                <div className="col-span-3">
+                  {viewCustomer.shippingAddress.country}
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end">
+            <Button
+              variant="default"
+              onClick={closeCustomerView}
+              className="bg-teal-600 hover:bg-teal-700"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
-  )
+  );
 }

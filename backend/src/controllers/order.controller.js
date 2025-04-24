@@ -4,7 +4,7 @@ import { ApiResponse } from "../services/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Order } from "../models/order.model.js";
  
-//--------------------Order Placed------------------------
+//--------------------Order Placed-----------------------
 const orderPlaced = asyncHandler(async (req, res) => {
   const { orderItems, totalAmount, shippingAddress, paymentMethod } = req.body;
   const userId = req.user?.id;
@@ -37,7 +37,7 @@ const orderPlaced = asyncHandler(async (req, res) => {
       shippingAddress,
       paymentMethod,
       totalAmount,
-      orderStatus: "order placed",
+      orderStatus: "Order placed",
       paymentStatus: "cash",
       date: Date.now(),
     });
@@ -52,7 +52,7 @@ const orderPlaced = asyncHandler(async (req, res) => {
   }
 });
 
-//--------------------Get Order Detail--------------------
+//--------------------Get User Order Detail--------------
 const getOrderDetail = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
@@ -75,8 +75,66 @@ const getOrderDetail = asyncHandler(async (req, res) => {
   }
 })
 
+//--------------------Get All Orders Detail--------------
+const getAllOrdersDetail = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
+  }
+  try {
+    const orders = await Order.find({})
+    .populate("buyer", "userName")
+    .populate("orderItems.product")
+    .sort({ date: -1 });
+
+    if (!orders.length) {
+      throw new ApiError(404, "No orders found");
+    }
+    return res.json(new ApiResponse(200, orders, "All Order Details fetched successfully"));
+    
+  } catch (error) {
+    console.log("Order Detail Error:", error);
+    throw new ApiError(500, error.message || "Something went wrong");
+  }
+})
+
+//--------------------Update Order Status----------------
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+  const userId = req.user?.id;
+  
+    if (!userId) {
+      throw new ApiError(401, "Unauthorized User");
+    }
+    if (!orderId) {
+      throw new ApiError(400, "Order ID is required");
+    }
+    if (!status) {
+      throw new ApiError(400, "Status is required");
+    }
+  
+    try {
+      const order = await Order.findByIdAndUpdate(
+        orderId,
+        { orderStatus: status },
+        { new: true}
+      );
+
+      if (!order) {
+        throw new ApiError(404, "Order not found");
+      }
+      return res.json(new ApiResponse(200, order, "Order status updated successfully"));
+      
+    } catch (error) {
+      console.log("Update Order Status Error:", error);
+      throw new ApiError(500, error.message || "Something went wrong");
+    }
+  })
 
 export {
   orderPlaced,
   getOrderDetail,
+  getAllOrdersDetail,
+  updateOrderStatus,
 };
