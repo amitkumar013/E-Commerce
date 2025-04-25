@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Lock, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -23,8 +23,9 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error] = useState("");
   const { setAuth } = useAuth();
-
   const navigate = useNavigate();
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPassword = password.length >= 6;
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +56,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen">
       <Card className="w-full max-w-sm mx-auto">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle className="mb-6 flex items-center justify-center">Login</CardTitle>
           <CardDescription>
             Enter your credentials to access your account.
           </CardDescription>
@@ -63,28 +64,52 @@ export default function LoginPage() {
         <form onSubmit={handleLoginSubmit}>
           <CardContent>
             <div className="grid w-full items-center gap-4">
+              {/* Email Field */}
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  {email.length > 0 &&
+                    (isValidEmail ? (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 h-5 w-5" />
+                    ) : (
+                      <XCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 h-5 w-5" />
+                    ))}
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    className="pl-10 pr-10"
+                  />
+                </div>
               </div>
+
+              {/* Password Field */}
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  {password.length > 0 &&
+                    (isValidPassword ? (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 h-5 w-5" />
+                    ) : (
+                      <XCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 h-5 w-5" />
+                    ))}
+                  <Input
+                    id="password"
+                    placeholder="Enter password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    className="pl-10 pr-10"
+                  />
+                </div>
               </div>
             </div>
           </CardContent>

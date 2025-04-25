@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Phone, CheckCircle, XCircle } from "lucide-react";
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
@@ -28,6 +29,7 @@ export default function RegisterPage() {
   const [role, setRole] = useState("admin");
   const navigate = useNavigate();
   const URI = import.meta.env.VITE_BACKEND_URL;
+  const isValidPhone = /^[6-9]\d{9}$/.test(phone);
 
   useEffect(() => {
     const auth = localStorage.getItem("auth");
@@ -185,15 +187,28 @@ export default function RegisterPage() {
                 Phone Number
               </Label>
               <div className="relative">
-                <Icons.spinner className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                {/* Left-side phone icon */}
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+
+                {/* Right-side validation icon */}
+                {phone.length > 0 &&
+                  (isValidPhone ? (
+                    <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 h-5 w-5" />
+                  ) : (
+                    <XCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 h-5 w-5" />
+                  ))}
+
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   required
+                  pattern="[6-9]{1}[0-9]{9}"
+                  minLength={10}
+                  maxLength={10}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 pr-10"
                 />
               </div>
             </div>
