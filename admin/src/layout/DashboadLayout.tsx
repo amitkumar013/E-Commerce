@@ -21,7 +21,7 @@ export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-orange-50 dark:bg-gray-900">
+    <div className="flex h-screen overflow-hidden bg-blue-50 dark:bg-gray-900">
       {/* Sidebar with overlay */}
       <div
         className={cn(

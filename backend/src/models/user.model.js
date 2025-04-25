@@ -25,12 +25,7 @@ const userSchema = new mongoose.Schema (
         phone: {
             type: String,
             required: [true, 'Phone number is required'],
-            validate: {
-                validator: function(v) {
-                    return /^\+91[6-9]\d{9}$/.test(v);
-                },
-                message: "Invalid phone number"
-            }
+            unique: [true, 'Phone number already exists'],
         },
         avatar: {
             type: String,
