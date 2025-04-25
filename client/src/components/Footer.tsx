@@ -38,7 +38,7 @@ export function Footer() {
                 <FacebookIcon className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/amitkrishnan1"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <span className="sr-only">Instagram</span>
@@ -52,7 +52,7 @@ export function Footer() {
                 <Twitter className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href="https://studio.youtube.com/channel/UCUgy7BEedF-oV2feqUbatAg"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <span className="sr-only">YouTube</span>
@@ -84,7 +84,7 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      to="/categories"
+                      to="/collection"
                       className="text-base text-gray-400 hover:text-white transition-colors"
                     >
                       Categories
@@ -123,7 +123,7 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      to="/shipping"
+                      to="/my-order"
                       className="text-base text-gray-400 hover:text-white transition-colors"
                     >
                       Shipping

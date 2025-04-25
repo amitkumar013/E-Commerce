@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 interface Product {
   _id: string;
   name: string;
-  image?: string;
+  images?: string[];
   price: number;
   discountPrice?: number;
   discountPercentage?: number;

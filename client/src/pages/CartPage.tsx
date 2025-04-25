@@ -86,13 +86,16 @@ export function CartPage() {
 
   //----Calculate cart totals----
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + (item.price + item.discountPrice) * item.quantity,
     0
   );
-  const discountedTotal = cart.reduce(
+
+  const totalSavings = cart.reduce(
     (sum, item) => sum + item.discountPrice * item.quantity,
     0
   );
+  
+  const total = subtotal - totalSavings;
 
   const handleLoginRedirect = () => {
     navigate("/auth/login");
@@ -101,16 +104,18 @@ export function CartPage() {
     setShowLoginPopup(!auth?.token);
   }, [auth.token]);
 
-  const totalSavings = subtotal - discountedTotal;
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white mt-12">
       <div className="container mx-auto px-4 py-8">
-        <div className={`text-center text-lg md:text-xl font-semibold p-3 
-          ${ auth?.token? "text-green-600 bg-green-100": "text-red-600 bg-red-100 rounded-lg" }`}
-        >
-          {auth?.token? `Hello, ${auth.user?.userName} ✅`: "🔒 Please login to checkout"}
+        <div className="flex justify-center">
+          <span
+            className={`text-center text-lg md:text-xl font-semibold p-3 rounded-lg mb-2
+            ${auth?.token ? "text-blue-600 bg-green-100" : "text-red-600 bg-red-100 rounded-lg"}`}
+          >
+            {auth?.token ? `Hello, ${auth.user?.userName} buy now ✅` : "🔒 Please login to checkout"}
+          </span>
         </div>
 
         {/* Login Popup */}
@@ -179,7 +184,7 @@ export function CartPage() {
                     <AnimatePresence mode="popLayout">
                       {cart.map((item) => {
                         const discountPercentage = Math.round(
-                          ((item.price - item.discountPrice) / item.price) * 100
+                          ((item.price - item.discountPrice))
                         );
 
                         return (
@@ -212,10 +217,10 @@ export function CartPage() {
                                     </p>
                                     <div className="flex items-center gap-2">
                                       <span className="font-semibold text-primary">
-                                        {formatPrice(item.discountPrice)}
+                                        {formatPrice(item.price)}
                                       </span>
                                       <span className="text-sm text-muted-foreground line-through">
-                                        {formatPrice(item.price)}
+                                        {formatPrice(item.discountPrice)}
                                       </span>
                                       <Badge
                                         variant="secondary"
@@ -233,6 +238,7 @@ export function CartPage() {
                                         size="icon"
                                         className="h-8 w-8 rounded-full"
                                         onClick={() =>
+                                          item.quantity > 1 &&
                                           updateQuantity(
                                             item._id,
                                             item.quantity - 1
@@ -310,12 +316,12 @@ export function CartPage() {
                         </div>
                         <div className="flex justify-between text-green-600">
                           <span>Total Savings</span>
-                          <span>- {formatPrice(totalSavings)}</span>
+                          <span>{formatPrice(totalSavings)}</span>
                         </div>
                         <div className="flex justify-between border-t pt-4 text-lg font-semibold">
                           <span>Total</span>
                           <span className="text-primary">
-                            {formatPrice(discountedTotal)}
+                            {formatPrice(total)}
                           </span>
                         </div>
                         <Link to="/place-order">

@@ -30,7 +30,7 @@ const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
           }
           alt={product.name}
           className="h-[135px] md:h-[210px] lg:h-[230px] w-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
-        /> 
+        />
 
         <Button
           variant="ghost"
@@ -40,42 +40,35 @@ const HomeProductCard: FC<ProductCardProps> = ({ product }) => {
           <Heart className="h-5 w-5 text-red-500" />
         </Button>
       </div>
-      <CardContent className="p-4">
-        <h2 className="font-semibold text-lg col-span-1">{product.name}</h2>
-        <div className="mt-1 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-lg text-gray-900">
+      <CardContent className="p-3 space-y-1">
+        <h2 className="font-semibold text-sm truncate">{product.name}</h2>
+
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-1">
+            <span className="text-[13px] font-bold text-base text-gray-900">
               ₹{product.price}
             </span>
-            <span className="text-sm text-gray-500 line-through">
+            <span className="text-xs text-gray-500 line-through">
               ₹{product.discountPrice}
             </span>
-
-            <span className="text-xs text-green-600 font-semibold bg-green-100 px-2 py-1 rounded-lg">
-              {product.discountPercentage}% OFF
-            </span>
+            {product.discountPercentage && (
+              <span className="text-[9px] text-green-600 font-semibold bg-green-100 px-1.5 py-0.5 rounded-md whitespace-nowrap">
+                {product.discountPercentage}% OFF
+              </span>
+            )}
           </div>
         </div>
-        <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
-          <p className="font-medium">{product.delivery}</p>
+
+        <div className="flex items-center justify-between text-[11px] text-gray-600">
+          <p className="font-medium whitespace-nowrap">free delivery</p>
           <span
-            className={`px-2 py-1 rounded-2xl font-semibold
-              ${
-                product.stock?.toLowerCase().includes("out")
-                  ? "text-red-600 bg-red-100"
-                  : ""
-              }
-              ${
-                product.stock?.toLowerCase().includes("low")
-                  ? "text-yellow-600 bg-yellow-100"
-                  : ""
-              }
-              ${
-                !product.stock || product.stock.toLowerCase().includes("in")
-                  ? "text-green-600 bg-green-100"
-                  : ""
-              }
-            `}
+            className={`py-0.5 rounded-full font-semibold capitalize ${
+              product.stock?.toLowerCase().includes("out")
+                ? "text-red-600 bg-red-100"
+                : product.stock?.toLowerCase().includes("low")
+                ? "text-yellow-600 bg-yellow-100"
+                : "text-green-600 bg-green-100"
+            }`}
           >
             {product.stock ? product.stock.replace(/^\d+\s*/, "") : "In Stock"}
           </span>

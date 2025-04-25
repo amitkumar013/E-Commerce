@@ -135,15 +135,15 @@ export function ProductDetails() {
       : 0;
 
   return (
-    <div className="container mx-auto px-4 py-24">
+    <div className="container mx-auto px-6 py-20">
       <div className="grid gap-8 md:grid-cols-2">
         {/* Image Gallery */}
         <div className="space-y-4">
-          <div className="group relative aspect-square overflow-hidden rounded-lg border bg-muted">
+          <div className="group relative overflow-hidden rounded-lg border bg-muted">
             <img
               src={product.images[selectedImage]}
               alt={product.name}
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-[520px] object-contain transition-transform duration-300 group-hover:scale-150"
             />
             <Button
               variant="secondary"
@@ -181,7 +181,7 @@ export function ProductDetails() {
 
         {/* Product Info */}
         <div className="space-y-6">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <p className="text-lg font-semibold text-primary">
               {product.brand}
             </p>
@@ -196,7 +196,7 @@ export function ProductDetails() {
                   className={cn(
                     "h-5 w-5 transition-colors duration-200",
                     i < Math.round(averageRating)
-                      ? "fill-primary text-primary"
+                      ? "fill-yellow-400 text-yellow-400"
                       : "fill-muted text-muted-foreground"
                   )}
                 />
@@ -205,7 +205,7 @@ export function ProductDetails() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <span className="text-3xl font-bold text-primary">
                 ₹{product.price}
               </span>
@@ -214,33 +214,32 @@ export function ProductDetails() {
                 ₹{product.discountPrice}
               </span>
 
-              <Badge variant="secondary" className="ml-2">
+              <Badge
+                variant="secondary"
+                className="ml-2 bg-green-200 text-white-800 px-2 py-1 rounded-full font-medium"
+              >
                 {product.discountPercentage}% OFF
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Inclusive of all taxes
-            </p>
           </div>
 
           <div className="space-y-4">
-            <div className="space-y-2">
+            <div className="flex items-center gap-8">
               <Label>Color</Label>
               <RadioGroup
                 defaultValue={selectedColor}
                 onValueChange={setSelectedColor}
-                className="flex gap-2"
+                className="flex gap-4 items-center"
               >
                 {product.colors.map((color: any) => (
-                  <div key={color._id} className="flex items-center space-x-2">
+                  <div key={color._id} className="flex items-center gap-2">
                     <RadioGroupItem
                       value={color.name}
                       id={`color-${color._id}`}
+                      className="h-6 w-6 rounded-full border"
+                      style={{ backgroundColor: color.name }}
                     />
-                    <Label
-                      htmlFor={`color-${color._id}`}
-                      className="flex items-center space-x-2"
-                    >
+                    <Label htmlFor={`color-${color._id}`} className="text-sm">
                       {color.name}
                     </Label>
                   </div>
@@ -248,15 +247,15 @@ export function ProductDetails() {
               </RadioGroup>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex items-center gap-8">
               <Label className="text-base">Size</Label>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="flex gap-2">
                 {product.sizes.map((size: string | number, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedSize(size)}
                     className={cn(
-                      "relative h-12 rounded-lg border text-sm font-medium transition-all duration-200 hover:border-primary hover:bg-primary/5",
+                      "h-10 w-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-all duration-200 hover:border-primary hover:bg-primary/5",
                       selectedSize === size && "border-primary bg-primary/10"
                     )}
                   >
@@ -267,11 +266,9 @@ export function ProductDetails() {
             </div>
           </div>
 
-          <div className="space-y-2 rounded-lg bg-muted/50 p-4 backdrop-blur-sm">
+          <div className="flex items-center gap-8 rounded-lg bg-muted/50 p-1 backdrop-blur-sm">
             <p className="text-sm font-medium">Seller</p>
-            <p className="text-sm text-muted-foreground">
-              {product.sellerName}
-            </p>
+            <p className="text-sm text-muted-foreground">{product.sellerName}</p>
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">

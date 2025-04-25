@@ -14,6 +14,13 @@ import OrderSuccess from "./pages/OrderSuccess";
 import MyOrder from "./pages/MyOrdersPage";
 import WishlistPage from "./pages/WishListPage";
 import SettingPage from "./pages/SettingPage";
+import AboutPage from "./pages/AboutPage";
+import BlogPage from "./pages/BlogPage";
+import CareersPage from "./pages/CareersPage";
+import ContactPage from "./pages/ContactPage";
+import DealsPage from "./pages/DealsPage";
+import FAQPage from "./pages/FAQ.Page";
+import { SearchPage } from "./pages/SearchPage";
 
 const router = createBrowserRouter([
     {
@@ -59,6 +66,34 @@ const router = createBrowserRouter([
           {
             path: "settings",
             element: <SettingPage />
+          },
+          {
+            path: "about",
+            element: <AboutPage />
+          },
+          {
+            path: "blog",
+            element: <BlogPage />
+          },
+          {
+            path: "careers",
+            element: <CareersPage />
+          },
+          {
+            path: "contact",
+            element: <ContactPage />
+          },
+          {
+            path: "deals",
+            element: <DealsPage />
+          },
+          {
+            path: "faq",
+            element: <FAQPage />
+          },
+          {
+            path: "search-results",
+            element: <SearchPage />,
           },
           {
             path: "*",

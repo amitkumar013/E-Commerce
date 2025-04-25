@@ -11,7 +11,8 @@ import {
     getSingleAndRelatedProducts,
     ratingProduct,
     removeFromCart,
-    removeFromWishlist
+    removeFromWishlist,
+    searchProducts
 } from "../controllers/product.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -37,6 +38,7 @@ router.route("/remove-cart/:id").delete(verifyJWT, removeFromCart)
 router.route("/rating/:id").patch(verifyJWT, ratingProduct)
 router.route("/add-wishlist/:id").patch(verifyJWT, addToWishlist)
 router.route("/remove-wishlist/:id").patch(verifyJWT, removeFromWishlist)
+router.route("/search/:keyword").get(searchProducts)
 
 
 export default router;

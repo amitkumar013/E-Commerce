@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Search,
   ShoppingCart,
   User,
-  X,
   Heart,
   LogOut,
   Settings,
@@ -15,6 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/cartContext";
 import { useAuth } from "@/context/authContext";
 import easyShop from "@/assets/EasyShop.png";
+import { SearchBar } from "@/components/SearchBar";
+
 export function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -33,14 +33,13 @@ export function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+    <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50 ">
       <div className="container mx-auto px-4 py-2 flex items-center">
-        <Link to="/" className="flex items-center text-xl font-bold text-primary mr-auto">
-          <img
-            src={easyShop}
-            alt="easyShop Logo"
-            className="h-12 w-12 mr-2"
-          />
+        <Link
+          to="/"
+          className="flex items-center text-xl font-bold text-primary mr-auto"
+        >
+          <img src={easyShop} alt="easyShop Logo" className="h-12 w-12 mr-2" />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-2 ml-4">
@@ -49,15 +48,17 @@ export function Header() {
           </Link>
         </nav>
 
-        <div className="hidden md:flex items-center space-x-2 flex-1 max-w-md mx-6">
-          <Input type="text" placeholder="Search products" className="w-full" />
-          <Button size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
+        <div className="hidden md:block absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <SearchBar />
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSearch}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={toggleSearch}
+          >
             <Search className="h-5 w-5" />
           </Button>
 
@@ -85,7 +86,6 @@ export function Header() {
                       Order
                     </Link>
                   </li>
-
                   <li>
                     <Link
                       to="/wishlist"
@@ -104,7 +104,6 @@ export function Header() {
                       <User className="h-4 w-4 mr-2 text-gray-600" /> Profile
                     </Link>
                   </li>
-
                   <li>
                     <Link
                       to="/settings"
@@ -127,6 +126,7 @@ export function Header() {
               </div>
             )}
           </div>
+
           {/* Cart Button */}
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon" className="rounded-full">
@@ -140,7 +140,10 @@ export function Header() {
           </Link>
 
           {/* Admin */}
-          <Link to="https://eshop-admin-sand-gamma.vercel.app" className="relative">
+          <Link
+            to="https://eshop-admin-sand-gamma.vercel.app"
+            className="relative"
+          >
             <Button
               variant="outline"
               size="sm"
@@ -154,14 +157,7 @@ export function Header() {
       </div>
 
       {/* Mobile Menu */}
-      {isSearchOpen && (
-        <div className="md:hidden px-4 py-2 bg-gray-100 flex items-center">
-          <Input type="text" placeholder="Search products" className="w-full" />
-          <Button size="icon" onClick={toggleSearch}>
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-      )}
+      {isSearchOpen && <SearchBar isMobile onClose={toggleSearch} />}
     </header>
   );
 }

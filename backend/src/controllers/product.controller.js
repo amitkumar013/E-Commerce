@@ -539,6 +539,48 @@ const getSimilarProducts = asyncHandler(async (req, res) => {
 
 });
 
+//--------------------Search Products---------------------
+const searchProducts = asyncHandler(async (req, res) => {
+  const { keyword } = req.params;
+  if (!keyword) {
+    throw new ApiError(400, "Keyword is required");
+  }
+
+  try {
+    const minPrice = 100;
+    const maxPrice = 10000;
+    const results = await Product.find({
+      $or: [
+        { name: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { brand: { $regex: keyword, $options: "i" } },
+        { price: { $gte: minPrice, $lte: maxPrice } },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .limit(12)
+      .populate("category")
+      .lean();
+
+    if (!results.length) {
+      throw new ApiError(404, "No products found for this keyword");
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200,
+        {
+          totalProducts: results.length,
+          products: results,
+        },
+        "Products fetched successfully"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(500, `Something went wrong: ${error.message}`);
+    
+  }
+});
+
 export {
   addProduct,
   getAllProducts,
@@ -551,4 +593,5 @@ export {
   addToWishlist,
   removeFromWishlist,
   getSimilarProducts,
+  searchProducts,
 };
