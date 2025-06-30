@@ -45,7 +45,13 @@ export function HomePage() {
       };
 
       setProducts(formattedProducts);
-      localStorage.setItem("homeProducts", JSON.stringify(formattedProducts));
+      localStorage.setItem(
+        "homeProducts",
+        JSON.stringify({
+          data: formattedProducts,
+          timestamp: Date.now(),
+        })
+      );
     } catch (error) {
       toast.error("Failed to fetch products");
     } finally {
@@ -54,10 +60,16 @@ export function HomePage() {
   };
 
   useEffect(() => {
-    const storedProducts = localStorage.getItem("homeProducts");
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-      setLoading(false);
+    const stored = localStorage.getItem("homeProducts");
+    if (stored) {
+      const { data, timestamp } = JSON.parse(stored);
+      const isExpired = !timestamp || (Date.now() - timestamp > 1 * 60 * 1000);
+      if (isExpired) {
+        getHomeProducts();
+      } else {
+        setProducts(data);
+        setLoading(false);
+      }
     } else {
       getHomeProducts();
     }

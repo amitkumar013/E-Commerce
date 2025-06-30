@@ -52,7 +52,7 @@ export function Footer() {
                 <Twitter className="h-6 w-6" />
               </a>
               <a
-                href="https://studio.youtube.com/channel/UCUgy7BEedF-oV2feqUbatAg"
+                href="https://studio.youtube.com"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <span className="sr-only">YouTube</span>

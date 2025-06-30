@@ -56,6 +56,7 @@ const orderPlaced = asyncHandler(async (req, res) => {
 const getOrderDetail = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
+  
     throw new ApiError(401, "Unauthorized User");
   }
   try {

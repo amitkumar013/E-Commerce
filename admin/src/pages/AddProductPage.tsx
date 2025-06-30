@@ -48,7 +48,7 @@ export default function AddProduct() {
     "Purple",
     "Gray",
   ];
-  const sizes = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
+  const sizes = ["XS", "S", "M", "L", "XL", "4", "5", "6", "7", "8", "9", "10"];
   const [discountPrice, setDiscountPrice] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState("");
   const [loading, setLoading] = useState(false);

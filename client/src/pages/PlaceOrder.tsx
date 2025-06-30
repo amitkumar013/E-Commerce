@@ -36,10 +36,7 @@ export default function PlaceOrder() {
   const URI = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    const total = cart.reduce(
-      (sum, item) => sum + item.discountPrice * item.quantity,
-      0
-    );
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity,0);
     setTotalAmount(total);
   }, [cart]);
 
@@ -239,7 +236,7 @@ export default function PlaceOrder() {
               <span>
                 {item.name} (x{item.quantity})
               </span>
-              <span>₹{item.discountPrice * item.quantity}</span>
+              <span>₹{item.price * item.quantity}</span>
             </div>
           ))}
         </div>

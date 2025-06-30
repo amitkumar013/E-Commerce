@@ -85,10 +85,7 @@ export function CartPage() {
   };
 
   //----Calculate cart totals----
-  const subtotal = cart.reduce(
-    (sum, item) => sum + (item.price + item.discountPrice) * item.quantity,
-    0
-  );
+  const subtotal = cart.reduce((sum, item) => sum + (item.price + item.discountPrice) * item.quantity, 0);
 
   const totalSavings = cart.reduce(
     (sum, item) => sum + item.discountPrice * item.quantity,
