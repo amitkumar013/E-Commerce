@@ -84,7 +84,7 @@ export default function AddProduct() {
         toast.error("Failed to fetch categories");
       }
     } catch (error) {
-      toast.error("Add categories");
+      toast.error("First add categories");
       navigate("/admin/category");
     }
   };

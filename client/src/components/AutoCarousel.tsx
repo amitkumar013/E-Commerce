@@ -6,24 +6,24 @@ const SLIDE_DURATION = 4000;
 
 const images = [
   {
-    url: "https://images.unsplash.com/photo-1541560052-5e137f229371?q=80&w=2940&auto=format&fit=crop",
-    alt: "Premium Headphones",
-    title: "Premium Audio Experience",
+    url: "https://imgs.search.brave.com/7PNenLqSBS8UCnokgL82_L5GJHLV-7aWCg4jIqSP4M4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzMzLzVj/LzdhLzMzNWM3YTMw/M2I4ODM5ZTZlNDkx/ZGY0NTU4MWEyMWM5/LmpwZw",
+    alt: "Sneakers",
+    title: "Sneakers",
   },
   {
-    url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2899&auto=format&fit=crop",
+    url: "https://imgs.search.brave.com/QyLWPqmMNNV_mYks21SNFJrO9sU9ZkNtCH_56EqamlQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1wc2Qv/aG9yaXpvbnRhbC13/ZWJzaXRlLWJhbm5l/XzQ1MTE4OS0xMTIu/anBnP3NlbXQ9YWlz/X2l0ZW1zX2Jvb3N0/ZWQmdz03NDA",
+    alt: "Smart Phone",
+    title: "Smart Phone",
+  },
+  {
+    url: "https://imgs.search.brave.com/idwlNeM-OQusCI-dx3jo0FxMqtL4hS3REu91LBIMd2o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzM2L2Zj/Lzc0LzM2ZmM3NDk0/ZDhiODJlN2Y0ZmUw/MTEzNDZjZDU5MDUy/LmpwZw",
+    alt: "Jeans",
+    title: "Stylish Jeans",
+  },
+  {
+    url: "https://imgs.search.brave.com/MXL9wDRaEx8KgaLwupa9kmi8ocPsTicWNEq6F1gRKHE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/b3RvZml4dGVjaC51/cy9jZG4vc2hvcC9w/cm9kdWN0cy9vdG9m/aXgtd2F0Y2gtd2h0/LTFfODAweC5qcGc_/dj0xNjUyMjA2NTA3",
     alt: "Smart Watch",
-    title: "Next-Gen Wearable",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=2864&auto=format&fit=crop",
-    alt: "Laptop",
-    title: "Professional Workstation",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=2864&auto=format&fit=crop",
-    alt: "Earbuds",
-    title: "Wireless Freedom",
+    title: "Smart Watch",
   },
   {
     url: "https://images.unsplash.com/photo-1507764923504-cd90bf7da772?q=80&w=2947&auto=format&fit=crop",

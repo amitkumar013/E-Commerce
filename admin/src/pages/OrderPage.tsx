@@ -82,7 +82,7 @@ export default function OrdersPage() {
     token = parsedAuth?.token;
 
     if (!token) {
-      toast.error("Session expired or not logged in. Redirecting to login.");
+      toast.error("Session expired or Unauthorized user!");
       navigate("/auth/login");
       return;
     }
@@ -114,7 +114,7 @@ export default function OrdersPage() {
       setOrders(mappedOrders);
     } catch (error: any) {
       if (error.response?.status === 401) {
-        toast.error("Unauthorized access. Please log in again.");
+        toast.error("Unauthorized user!");
         navigate("/auth/login");
       }
     }

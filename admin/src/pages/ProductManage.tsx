@@ -82,7 +82,7 @@ export default function ProductManage() {
     } catch (error: any) {
       toast.error("Error fetching products:", error);
       if (error.response) {
-        toast.error(error.response.data?.message || "Server error occurred");
+        toast.error(error.response.data?.message);
       } else if (error.request) {
         toast.error("Network error occurred. Please check your connection.");
       } else {
